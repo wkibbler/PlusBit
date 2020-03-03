@@ -14,6 +14,7 @@ import Root from './app/Root'
 import Login from './app/Login'
 import Dashboard from './app/Dashboard'
 import Util from './app/Util'
+import RNSecureKeyStore, {ACCESSIBLE} from "react-native-secure-key-store";
 
 const width = Dimensions.get('window').width
 const height = Dimensions.get('window').height
@@ -28,7 +29,9 @@ export default class App extends Component {
       dashboard: new Animated.Value(0),
       util: new Animated.Value(0),
       hashSplash: false,
-      utilArg: ''
+      utilArg: '',
+      user: {activeCoins: []},
+      secondaryUtilArg: ''
     }
   }
   componentDidMount(){
@@ -46,6 +49,7 @@ export default class App extends Component {
   }
 
   dashboard = () => {
+    this.updateUser()
     Animated.timing(this.state.main, {
       toValue: 0,
       duration: 1000,
@@ -64,8 +68,8 @@ export default class App extends Component {
     }, 1000);
   }
 
-  util = (arg) => {
-    this.setState({utilArg: arg})
+  util = (arg, secondary) => {
+    this.setState({utilArg: arg, secondaryUtilArg: secondary || ''})
     Animated.timing(this.state.dashboard, {
       toValue: -width * 2,
       duration: 1000,
@@ -100,6 +104,26 @@ export default class App extends Component {
     this.setState({user: {}})
   }
 
+  updateUser = () => {
+    RNSecureKeyStore.get("userData").then((res) => {
+      console.log(JSON.parse(res))
+      this.setState({user: JSON.parse(res)})
+    })
+  }
+
+  utilToDashboard = () => {
+    Animated.timing(this.state.dashboard, {
+      toValue: -width,
+      duration: 1000,
+      easing: Easing.elastic(1.2)
+    }).start();
+    Animated.timing(this.state.util, {
+      toValue: -width,
+      duration: 1000,
+      easing: Easing.elastic(1.2)
+    }).start();
+  }
+
   render() {
     return (
       <View style={{backgroundColor: '#222222'}}>
@@ -111,13 +135,17 @@ export default class App extends Component {
         </Animated.View>
         <Animated.View style={{transform: [{translateX: this.state.dashboard}]}}>
           <Dashboard
-            util={(arg) => this.util(arg)}
+            util={(arg, secondary) => this.util(arg, secondary)}
+            user={this.state.user}
+            updateUser={() => this.updateUser()}
           />
         </Animated.View>
         <Animated.View style={{transform: [{translateX: this.state.util}]}}>
           <Util
             page={this.state.utilArg}
             utilToLogin={() => this.utilToLogin()}
+            utilToDashboard={() => this.utilToDashboard()}
+            args={this.state.secondaryUtilArg}
           />
         </Animated.View>
       </Animated.View>
@@ -140,35 +168,3 @@ const styles = StyleSheet.create({
     height: height
   }
 });
-
-
-
-
-/*let setup = {
-  isometric_contractions: [
-    'rectus abdominus',
-    'latisimus dorsi',
-    'posterior deltiod',
-    'glutius maximus',
-    'trapizius'
-  ],
-  movements: [
-    'dorsi flextion',
-    'flextion at knee',
-    'flextion of the hip',
-  ]
-}
-
-let backswing = {
-  concentric_contractions: [
-    'obliques',
-    'rectus femoris',
-    'glutius medius'
-  ],
-  movements: [
-    'abduction of right shoulder',
-    'adduction of left shoulder',
-    `rotation caused by ${this.concentric_contractions.map()}`,
-    ''
-  ]
-}*/

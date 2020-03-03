@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, Dimensions, Animated, Text } from 'react-native';
 import Settings from './utilPages/Settings'
+import Wallet from './utilPages/Wallet'
 
 export default class Util extends Component {
 
@@ -17,6 +18,8 @@ export default class Util extends Component {
             {
                 this.props.page == 'settings' ? (
                     <Settings props={this.props}/>
+                ) : this.props.page == 'wallet' ? (
+                    <Wallet props={this.props}/>
                 ) : null
             }
         </View>

@@ -69,7 +69,6 @@ export default class App extends Component {
         let userData = {username: this.state.registerUsername, password: bcrypt.hashSync(this.state.registerPassword, 10), biometrics: false, defaultUnit: 'coin', fiatUnit: 'USD', activeCoins: ['BTC', 'ILC']}
         RNSecureKeyStore.set("userData", JSON.stringify(userData), {accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY})
         .then((res) => {
-            //this.props.updateUserInfo(userData)
             this.props.dashboard()
         }, (err) => {
             Alert.alert('There was an error saving profile')

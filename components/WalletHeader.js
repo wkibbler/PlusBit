@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { StyleSheet, View, Image, Dimensions, Easing, Animated } from 'react-native';
+import { StyleSheet, View, Image, Dimensions, TouchableOpacity, Animated } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient'
 import Text from './Text'
 
@@ -8,16 +8,7 @@ export default class CoinCard extends Component {
   constructor(){
     super()
     this.state = {
-      animation: new Animated.Value(-Dimensions.get('window').width)
     }
-  }
-
-  componentDidMount(){
-    Animated.timing(this.state.animation, {
-      toValue: 0,
-      duration: 1000,
-      easing: Easing.elastic(1.2)
-    }).start();
   }
 
   getLogo = (coin) => {
@@ -31,6 +22,7 @@ export default class CoinCard extends Component {
       return require('../assets/SAFE.png')
     }
   }
+
 
   getCoinData = (coin) => {
     if (coin == 'BTC'){
@@ -58,44 +50,65 @@ export default class CoinCard extends Component {
 
   render() {
     return (
-      <Animated.View style={{transform: [{translateX: this.state.animation}]}}>
+      <View style={styles.shadow}>
         <LinearGradient start={{x: 0, y: 0}} end={{x: 1, y: 0}} colors={this.getCoinData(this.props.coin).gradient} style={styles.card}>
-            <Image style={styles.icon} source={this.getLogo(this.props.coin)}/>
-            <View style={styles.cardInfo}>
-              <Text size={20} bold>{this.getCoinData(this.props.coin).name}</Text>
-              <Text size={13}>0.0000 {this.props.coin} | 0.00 USD</Text>
-            </View>
-            <Image style={styles.arrow} source={require('../assets/arrow.png')}/>
+          <TouchableOpacity onPress={() => this.props.back()} style={styles.arrowWrapper}>
+            <Image style={styles.arrow} source={require('../assets/backArrow.png')}/>
+          </TouchableOpacity>
+          <Image style={styles.logo} source={this.getLogo(this.props.coin)}/>
+          <View style={styles.hexagon}>
+        <View style={styles.hexagonInner} />
+        <View style={styles.hexagonBefore} />
+        <View style={styles.hexagonAfter} />
+      </View>
+            {this.props.children}
         </LinearGradient>
-      </Animated.View>
+      </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
   card: {
-    height: 110, 
-    width: Dimensions.get('window').width - 50, 
-    borderRadius: 10,
+    height: 190, 
+    width: Dimensions.get('window').width, 
     justifyContent: 'center',
     alignItems: 'flex-start',
     flexDirection: 'row'
   },
-  icon: {
-    width: 60,
-    height: 60,
-    marginTop: 25
+  shadow: {
+    shadowColor: "#181818",
+    shadowOffset: {
+  	width: 7,
+  	height: 7,
   },
-  cardInfo: {
-    width: 200,
-    height: 80,
-    marginTop: 15,
-    justifyContent: 'center',
-    paddingLeft: 20
+  shadowOpacity: 1,
+  shadowRadius: 7,
+
+  elevation: 30,
+  
   },
   arrow: {
-    width: 60,
-    height: 30,
-    marginTop: 40
+    width: 40,
+    height: 40
+  },
+  arrowWrapper: {
+    position: 'absolute',
+    left: 10,
+    top: 10
+  },
+  logo: {
+    width: 70, 
+    height: 80,
+    shadowColor: "#181818",
+    shadowOffset: {
+  	width: 7,
+  	height: 7,
+  },
+  shadowOpacity: 1,
+  shadowRadius: 7,
+
+  elevation: 30,
+  marginTop: 25
   },
 })

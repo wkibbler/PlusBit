@@ -1,18 +1,13 @@
 import React, { Component } from 'react';
-<<<<<<< HEAD
 import { View, StyleSheet, Dimensions, Image, TouchableOpacity, ScrollView } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient'
 import Text from '../components/Text'
 import Row from '../components/Row'
-import RNSecureKeyStore, {ACCESSIBLE} from "react-native-secure-key-store";
 import CoinCard from '../components/CoinCard'
-=======
-import { View, StyleSheet, Dimensions, Image, TouchableOpacity, Platform } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient'
-import Text from '../components/Text'
-import Row from '../components/Row'
 import DeviceInfo from 'react-native-device-info'
->>>>>>> a735f4487aa2f062ab1b721d29c5686af1883ef1
+import Modal from 'react-native-modal'
+import Card from '../components/Card'
+import RNSecureKeyStore, {ACCESSIBLE} from "react-native-secure-key-store";
 
 const height = Dimensions.get('window').height
 const width = Dimensions.get('window').width
@@ -22,17 +17,33 @@ export default class Dashboard extends Component {
   constructor(){
     super()
     this.state = {
-      user: {activeCoins: []}
+      addModal: false,
+      removeModal: false
     }
   }
 
-  componentDidMount(){
-    RNSecureKeyStore.get("userData").then((res) => {
-      console.log(JSON.parse(res))
-      this.setState({user: JSON.parse(res)})
-    })
+  addAsset = (sym) => {
+    this.setState({addModal: false})
+    this.props.user.activeCoins.push(sym)
+    RNSecureKeyStore.set("userData", JSON.stringify(this.props.user), {accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY})
+        .then((res) => {
+            this.props.updateUser()
+        }, (err) => {
+            Alert.alert('There was an error updating user state')
+        });
   }
 
+  removeAsset = (sym) => {
+    this.setState({removeModal: false})
+    let i = this.props.user.activeCoins.indexOf(sym)
+    this.props.user.activeCoins.splice(i, 1)
+    RNSecureKeyStore.set("userData", JSON.stringify(this.props.user), {accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY})
+        .then((res) => {
+            this.props.updateUser()
+        }, (err) => {
+            Alert.alert('There was an error updating user state')
+        });
+  }
 
   render () {
     return (
@@ -44,10 +55,10 @@ export default class Dashboard extends Component {
               <Text size={20}>0.00 USD</Text>
             </View>
           </LinearGradient>
-          <ScrollView style={{width: Dimensions.get('window').width, marginTop: 20}} contentContainerStyle={{alignItems: 'center', height: Dimensions.get('window').height - 270}}>
+          <ScrollView style={{width: Dimensions.get('window').width}} contentContainerStyle={{alignItems: 'center', height: Dimensions.get('window').height - 270}}>
           {
-            this.state.user.activeCoins.map((item, index) => (
-              <TouchableOpacity style={styles.coinWrapper}>
+            this.props.user.activeCoins.map((item, index) => (
+              <TouchableOpacity onPress={() => this.props.util('wallet', {name: item})} style={styles.coinWrapper}>
                  <CoinCard coin={item}/>
               </TouchableOpacity>
             ))
@@ -55,10 +66,10 @@ export default class Dashboard extends Component {
           </ScrollView>
           <View style={styles.navBar}>
             <Row>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => this.setState({addModal: true})}>
                 <Image style={styles.navIcon} source={require('../assets/add.png')}/>
               </TouchableOpacity>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => this.setState({removeModal: true})}>
                 <Image style={styles.navIcon} source={require('../assets/minus.png')}/>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => this.props.util('settings')}>
@@ -66,6 +77,58 @@ export default class Dashboard extends Component {
               </TouchableOpacity>
             </Row>
           </View>
+
+          <Modal style={styles.modal} isVisible={this.state.addModal} onBackdropPress={() => this.setState({addModal: false})}>
+            <Card width={200} height={300}>
+              <Text bold size={20} top={20}>Add an asset</Text>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <TouchableOpacity onPress={() => this.addAsset('BTC')} disabled={this.props.user.activeCoins.indexOf('BTC') == -1 ? false : true} style={[{alignItems: 'center'}, this.props.user.activeCoins.indexOf('BTC') == -1 ? null : {opacity: 0.5}]}>
+                  <Image style={styles.addIcon} source={require('../assets/BTC.png')}/>
+                  <Text>Bitcoin</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => this.addAsset('ILC')} disabled={this.props.user.activeCoins.indexOf('ILC') == -1 ? false : true} style={[{alignItems: 'center'}, this.props.user.activeCoins.indexOf('ILC') == -1 ? null : {opacity: 0.5}]}>
+                  <Image style={styles.addIcon} source={require('../assets/ILC.png')}/>
+                  <Text>ILCoin</Text>
+                </TouchableOpacity>
+              </View>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <TouchableOpacity onPress={() => this.addAsset('ZEL')} disabled={this.props.user.activeCoins.indexOf('ZEL') == -1 ? false : true} style={[{alignItems: 'center'}, this.props.user.activeCoins.indexOf('ZEL') == -1 ? null : {opacity: 0.5}]}>
+                  <Image style={styles.addIcon} source={require('../assets/ZEL.png')}/>
+                  <Text>ZelCash</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => this.addAsset('SAFE')} disabled={this.props.user.activeCoins.indexOf('SAFE') == -1 ? false : true} style={[{alignItems: 'center'}, this.props.user.activeCoins.indexOf('SAFE') == -1 ? null : {opacity: 0.5}]}>
+                  <Image style={styles.addIcon} source={require('../assets/SAFE.png')}/>
+                  <Text>SafeCoin</Text>
+                </TouchableOpacity>
+              </View>
+            </Card>
+          </Modal>
+
+          <Modal style={styles.modal} isVisible={this.state.removeModal} onBackdropPress={() => this.setState({removeModal: false})}>
+            <Card width={200} height={300}>
+              <Text bold size={20} top={20}>Remove an asset</Text>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <TouchableOpacity onPress={() => this.removeAsset('BTC')} disabled={this.props.user.activeCoins.indexOf('BTC') == -1 ? true : false} style={[{alignItems: 'center'}, this.props.user.activeCoins.indexOf('BTC') == -1 ? {opacity: 0.5} : null]}>
+                  <Image style={styles.addIcon} source={require('../assets/BTC.png')}/>
+                  <Text>Bitcoin</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => this.removeAsset('ILC')} disabled={this.props.user.activeCoins.indexOf('ILC') == -1 ? true : false} style={[{alignItems: 'center'}, this.props.user.activeCoins.indexOf('ILC') == -1 ? {opacity: 0.5} : null]}>
+                  <Image style={styles.addIcon} source={require('../assets/ILC.png')}/>
+                  <Text>ILCoin</Text>
+                </TouchableOpacity>
+              </View>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <TouchableOpacity onPress={() => this.removeAsset('ZEL')} disabled={this.props.user.activeCoins.indexOf('ZEL') == -1 ? true : false} style={[{alignItems: 'center'}, this.props.user.activeCoins.indexOf('ZEL') == -1 ? {opacity: 0.5} : null]}>
+                  <Image style={styles.addIcon} source={require('../assets/ZEL.png')}/>
+                  <Text>ZelCash</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => this.removeAsset('SAFE')} disabled={this.props.user.activeCoins.indexOf('SAFE') == -1 ? true : false} style={[{alignItems: 'center'}, this.props.user.activeCoins.indexOf('SAFE') == -1 ? {opacity: 0.5} : null]}>
+                  <Image style={styles.addIcon} source={require('../assets/SAFE.png')}/>
+                  <Text>SafeCoin</Text>
+                </TouchableOpacity>
+              </View>
+            </Card>
+          </Modal>
         </View>
     )
   }
@@ -76,7 +139,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#222222',
         height: Dimensions.get('window').height,
         width: Dimensions.get('window').width,
-        alignItems: 'center'
+        alignItems: 'center',
+        marginTop: Platform.OS == 'ios' ? 0 : -35,
     },
     logo: {
       position: 'absolute',
@@ -118,15 +182,10 @@ const styles = StyleSheet.create({
     headerCard: {
       height: 150, 
       width: width, 
-      //borderRadius: 10,
       justifyContent: 'center',
       alignItems: 'flex-start',
       flexDirection: 'row',
-<<<<<<< HEAD
-      //marginTop: 70
-=======
       marginTop: DeviceInfo.hasNotch() == 1 ? 70 : 30
->>>>>>> a735f4487aa2f062ab1b721d29c5686af1883ef1
     },
     balanceWrapper: {
       position: 'absolute',
@@ -147,7 +206,7 @@ const styles = StyleSheet.create({
       width: width,
       height: 70,
       position: 'absolute',
-      bottom: Platform.OS == 'ios' ? 0 : 35,
+      bottom: 0,
       backgroundColor: '#363535'
     },
     title: {
@@ -156,5 +215,13 @@ const styles = StyleSheet.create({
       top: 53,
       width: 70,
       height: 70
-    }
+    },
+    modal: {
+      flex: 1,
+      alignItems: 'center',
+    },
+    addIcon: {
+      width: 80,
+      height: 80,
+    },
 })
