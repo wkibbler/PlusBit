@@ -1,10 +1,18 @@
 import React, { Component } from 'react';
+<<<<<<< HEAD
 import { View, StyleSheet, Dimensions, Image, TouchableOpacity, ScrollView } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient'
 import Text from '../components/Text'
 import Row from '../components/Row'
 import RNSecureKeyStore, {ACCESSIBLE} from "react-native-secure-key-store";
 import CoinCard from '../components/CoinCard'
+=======
+import { View, StyleSheet, Dimensions, Image, TouchableOpacity, Platform } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient'
+import Text from '../components/Text'
+import Row from '../components/Row'
+import DeviceInfo from 'react-native-device-info'
+>>>>>>> a735f4487aa2f062ab1b721d29c5686af1883ef1
 
 const height = Dimensions.get('window').height
 const width = Dimensions.get('window').width
@@ -114,7 +122,11 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       alignItems: 'flex-start',
       flexDirection: 'row',
+<<<<<<< HEAD
       //marginTop: 70
+=======
+      marginTop: DeviceInfo.hasNotch() == 1 ? 70 : 30
+>>>>>>> a735f4487aa2f062ab1b721d29c5686af1883ef1
     },
     balanceWrapper: {
       position: 'absolute',
@@ -135,7 +147,7 @@ const styles = StyleSheet.create({
       width: width,
       height: 70,
       position: 'absolute',
-      bottom: 0,
+      bottom: Platform.OS == 'ios' ? 0 : 35,
       backgroundColor: '#363535'
     },
     title: {
