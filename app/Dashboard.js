@@ -1,53 +1,50 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Dimensions, Image, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Dimensions, Image, TouchableOpacity, ScrollView } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient'
 import Text from '../components/Text'
 import Row from '../components/Row'
+import RNSecureKeyStore, {ACCESSIBLE} from "react-native-secure-key-store";
+import CoinCard from '../components/CoinCard'
 
 const height = Dimensions.get('window').height
 const width = Dimensions.get('window').width
 
 export default class Dashboard extends Component {
+
+  constructor(){
+    super()
+    this.state = {
+      user: {activeCoins: []}
+    }
+  }
+
+  componentDidMount(){
+    RNSecureKeyStore.get("userData").then((res) => {
+      console.log(JSON.parse(res))
+      this.setState({user: JSON.parse(res)})
+    })
+  }
+
+
   render () {
     return (
         <View style={styles.background}>
           <LinearGradient start={{x: 0, y: 0}} end={{x: 1, y: 0}} colors={['#363535', '#4a4949']} style={[styles.headerCard]}>
-            <Text style={styles.title} size={20} bold>PlusBit</Text>
+            <Image source={require('../assets/vertical-4.png')} style={styles.title}/>
             <View style={styles.balanceWrapper}>
               <Text size={28} bold>Balance</Text>
               <Text size={20}>0.00 USD</Text>
             </View>
           </LinearGradient>
-          <TouchableOpacity style={styles.coinWrapper}>
-          <LinearGradient start={{x: 0, y: 0}} end={{x: 1, y: 0}} colors={['rgb(233, 122, 22)', 'rgb(247, 156, 74)']} style={styles.card}>
-            <Image style={styles.icon} source={require('../assets/bitcoin.png')}/>
-            <View style={styles.cardInfo}>
-              <Text size={20} bold>Bitcoin</Text>
-              <Text size={13}>0.0000 BTC | 0.00 USD</Text>
-            </View>
-            <Image style={styles.arrow} source={require('../assets/arrow.png')}/>
-          </LinearGradient>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.coinWrapper}>
-          <LinearGradient start={{x: 0, y: 0}} end={{x: 1, y: 0}} colors={['rgb(130, 130, 130)', 'rgb(223, 223, 223)']} style={styles.card}>
-            <Image style={styles.icon} source={require('../assets/litecoin.png')}/>
-            <View style={styles.cardInfo}>
-              <Text size={20} bold>Litecoin</Text>
-              <Text size={13}>0.0000 LTC | 0.00 USD</Text>
-            </View>
-            <Image style={styles.arrow} source={require('../assets/arrow.png')}/>
-          </LinearGradient>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.coinWrapper}>
-          <LinearGradient start={{x: 0, y: 0}} end={{x: 1, y: 0}} colors={['rgb(19, 64, 115)', 'rgb(23, 142, 159)']} style={styles.card}>
-            <Image style={styles.icon} source={require('../assets/ilcoin.png')}/>
-            <View style={styles.cardInfo}>
-              <Text size={20} bold>ILCoin</Text>
-              <Text size={13}>0.0000 ILC | 0.00 USD</Text>
-            </View>
-            <Image style={styles.arrow} source={require('../assets/arrow.png')}/>
-          </LinearGradient>
-          </TouchableOpacity>
+          <ScrollView style={{width: Dimensions.get('window').width, marginTop: 20}} contentContainerStyle={{alignItems: 'center', height: Dimensions.get('window').height - 270}}>
+          {
+            this.state.user.activeCoins.map((item, index) => (
+              <TouchableOpacity style={styles.coinWrapper}>
+                 <CoinCard coin={item}/>
+              </TouchableOpacity>
+            ))
+          }
+          </ScrollView>
           <View style={styles.navBar}>
             <Row>
               <TouchableOpacity>
@@ -56,7 +53,7 @@ export default class Dashboard extends Component {
               <TouchableOpacity>
                 <Image style={styles.navIcon} source={require('../assets/minus.png')}/>
               </TouchableOpacity>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => this.props.util('settings')}>
                 <Image style={styles.navIcon} source={require('../assets/gear.png')}/>
               </TouchableOpacity>
             </Row>
@@ -111,17 +108,17 @@ const styles = StyleSheet.create({
       marginTop: 40
     },
     headerCard: {
-      height: 100, 
-      width: width - 70, 
-      borderRadius: 10,
+      height: 150, 
+      width: width, 
+      //borderRadius: 10,
       justifyContent: 'center',
       alignItems: 'flex-start',
       flexDirection: 'row',
-      marginTop: 70
+      //marginTop: 70
     },
     balanceWrapper: {
       position: 'absolute',
-      top: 10,
+      top: 50,
       right: 20,
       alignItems: 'flex-end'
     },
@@ -144,6 +141,8 @@ const styles = StyleSheet.create({
     title: {
       position: 'absolute',
       left: 20,
-      top: 15
+      top: 53,
+      width: 70,
+      height: 70
     }
 })
