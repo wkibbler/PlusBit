@@ -30,7 +30,6 @@ export default class App extends Component {
     }
   }
   componentDidMount(){
-    Keys()
     setTimeout(() => {
       Animated.timing(this.state.main, {
         toValue: -height,

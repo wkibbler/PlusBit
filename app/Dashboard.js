@@ -1,11 +1,29 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, Dimensions } from 'react-native';
+import { Text, View, StyleSheet, Dimensions, Image, TouchableOpacity } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient'
+
+const height = Dimensions.get('window').height
+const width = Dimensions.get('window').width
 
 export default class Dashboard extends Component {
   render () {
     return (
         <View style={styles.background}>
-            <Text style={{color: 'white', marginTop: 300}}>test</Text>
+          <TouchableOpacity style={[styles.coinWrapper, {marginTop: 70}]}>
+          <LinearGradient start={{x: 0, y: 0}} end={{x: 1, y: 0}} colors={['rgb(233, 122, 22)', 'rgb(247, 156, 74)']} style={{height: 110, width: width - 70, borderRadius: 10}}>
+
+          </LinearGradient>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.coinWrapper}>
+          <LinearGradient start={{x: 0, y: 0}} end={{x: 1, y: 0}} colors={['rgb(130, 130, 130)', 'rgb(223, 223, 223)']} style={{height: 110, width: width - 70, borderRadius: 10}}>
+
+          </LinearGradient>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.coinWrapper}>
+          <LinearGradient start={{x: 0, y: 0}} end={{x: 1, y: 0}} colors={['rgb(19, 64, 115)', 'rgb(23, 142, 159)']} style={{height: 110, width: width - 70, borderRadius: 10}}>
+
+          </LinearGradient>
+          </TouchableOpacity>
         </View>
     )
   }
@@ -18,4 +36,16 @@ const styles = StyleSheet.create({
         width: Dimensions.get('window').width,
         alignItems: 'center'
     },
+    logo: {
+      position: 'absolute',
+      width: 60,
+      height: 60,
+      left: 20,
+      top: 35
+    },
+    coinWrapper: {
+      width: width - 700,
+      height: 110,
+      marginTop: 30
+    }
 })
