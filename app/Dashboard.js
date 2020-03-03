@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Dimensions, Image, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Dimensions, Image, TouchableOpacity, Platform } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient'
 import Text from '../components/Text'
 import Row from '../components/Row'
+import DeviceInfo from 'react-native-device-info'
 
 const height = Dimensions.get('window').height
 const width = Dimensions.get('window').width
@@ -56,7 +57,7 @@ export default class Dashboard extends Component {
               <TouchableOpacity>
                 <Image style={styles.navIcon} source={require('../assets/minus.png')}/>
               </TouchableOpacity>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => this.props.util('settings')}>
                 <Image style={styles.navIcon} source={require('../assets/gear.png')}/>
               </TouchableOpacity>
             </Row>
@@ -117,7 +118,7 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       alignItems: 'flex-start',
       flexDirection: 'row',
-      marginTop: 70
+      marginTop: DeviceInfo.hasNotch() == 1 ? 70 : 30
     },
     balanceWrapper: {
       position: 'absolute',
@@ -138,7 +139,7 @@ const styles = StyleSheet.create({
       width: width,
       height: 70,
       position: 'absolute',
-      bottom: 0,
+      bottom: Platform.OS == 'ios' ? 0 : 35,
       backgroundColor: '#363535'
     },
     title: {
