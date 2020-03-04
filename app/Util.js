@@ -16,7 +16,7 @@ export default class Util extends Component {
 
   render() {
     return (
-        <GestureRecognizer config={{velocityThreshold: 0.000001, directionalOffsetThreshold: 8000}} onSwipeRight={() => this.props.utilToDashboard()} style={styles.background}>
+        <GestureRecognizer config={{velocityThreshold: 0.000001, directionalOffsetThreshold: 80}} onSwipeRight={() => this.props.utilToDashboard()} style={styles.background}>
             {
                 this.props.page == 'settings' ? (
                     <Settings props={this.props}/>

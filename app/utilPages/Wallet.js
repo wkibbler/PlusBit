@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Dimensions, Animated, TouchableOpacity, ScrollView, KeyboardAvoidingView, Easing, Image, Clipboard, Alert } from 'react-native';
+import { View, StyleSheet, Dimensions, Animated, TouchableOpacity, ScrollView, KeyboardAvoidingView, Easing, Image, Clipboard, Alert, Platform } from 'react-native';
 import Card from '../../components/Card'
 import Text from '../../components/Text'
 import WalletHeader from '../../components/WalletHeader'
@@ -118,7 +118,7 @@ export default class Wallet extends Component {
                     <QRCode 
                       size={340} 
                       value={this.props.props.keys[`${this.props.props.args.name}address`]}
-                      foregroundColor='white'
+                      foregroundColor='black'
                       backgroundColor='#363636'
                     />
                   </Card>
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
         marginLeft: 10
     },
     createWrapper: {
-        bottom: 30,
+        bottom: Platform.OS == 'ios' ? 30 : 50,
         right: 20,
         position: 'absolute',
     },
