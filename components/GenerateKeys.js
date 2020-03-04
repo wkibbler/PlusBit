@@ -1,7 +1,14 @@
 import '../shim'
-import Bitcoin from 'react-native-bitcoinjs-lib'
+var lib = require('genesis-js')
+var bigi = require('bigi')
 
-export default function(){
-    const keypair = Bitcoin.ECPair.makeRandom()
-console.log(keypair.getAddress())
+export default function(hash){
+    var d = bigi.fromBuffer(hash + 'bylibtech')
+    var BitcoinKeyPair = new lib.ECPair(d, null, {network: lib.networks.bitcoin});
+    return {
+        BTCaddress: BitcoinKeyPair.getAddress(),
+        BTCprivatekey: BitcoinKeyPair.toWIF(),
+        ILCaddress: BitcoinKeyPair.getAddress(),
+        ILCprivatekey: BitcoinKeyPair.toWIF()
+    }
 }

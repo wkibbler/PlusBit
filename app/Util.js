@@ -1,20 +1,22 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Dimensions, Animated, Text } from 'react-native';
+import { View, StyleSheet, Dimensions, Animated, Alert } from 'react-native';
 import Settings from './utilPages/Settings'
 import Wallet from './utilPages/Wallet'
+import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
+
 
 export default class Util extends Component {
 
     constructor(){
         super()
         this.state = {
-            imageOpacity: new Animated.Value(0)
+            imageOpacity: new Animated.Value(0),
         }
     }
 
   render() {
     return (
-        <View style={styles.background}>
+        <GestureRecognizer config={{velocityThreshold: 0.000001, directionalOffsetThreshold: 8000}} onSwipeRight={() => this.props.utilToDashboard()} style={styles.background}>
             {
                 this.props.page == 'settings' ? (
                     <Settings props={this.props}/>
@@ -22,7 +24,7 @@ export default class Util extends Component {
                     <Wallet props={this.props}/>
                 ) : null
             }
-        </View>
+        </GestureRecognizer>
     )
   }
 };

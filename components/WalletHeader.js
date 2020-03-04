@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import { StyleSheet, View, Image, Dimensions, TouchableOpacity, Animated } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient'
 import Text from './Text'
+import DeviceInfo from 'react-native-device-info'
+import Card from './Card'
 
 export default class CoinCard extends Component {
 
@@ -52,15 +54,17 @@ export default class CoinCard extends Component {
     return (
       <View style={styles.shadow}>
         <LinearGradient start={{x: 0, y: 0}} end={{x: 1, y: 0}} colors={this.getCoinData(this.props.coin).gradient} style={styles.card}>
-          <TouchableOpacity onPress={() => this.props.back()} style={styles.arrowWrapper}>
-            <Image style={styles.arrow} source={require('../assets/backArrow.png')}/>
-          </TouchableOpacity>
-          <Image style={styles.logo} source={this.getLogo(this.props.coin)}/>
-          <View style={styles.hexagon}>
-        <View style={styles.hexagonInner} />
-        <View style={styles.hexagonBefore} />
-        <View style={styles.hexagonAfter} />
-      </View>
+          <Card top={DeviceInfo.hasNotch() == 1 ? 50 : 25} width={280} height={80} justifyCenter style={{alignItems: 'flex-start'}}>
+            <Image style={styles.logo} source={this.getLogo(this.props.coin)}/>
+            <View style={styles.balanceWrapper}>
+              <Text bold>5.3213 BTC</Text>
+              <Text size={12}>321344 USD</Text>
+            </View>
+            <View style={styles.infoWrapper}>
+              <Text bold>{this.getCoinData(this.props.coin).name}</Text>
+              <Text size={12}>$8,728.20</Text>
+            </View>
+          </Card>
             {this.props.children}
         </LinearGradient>
       </View>
@@ -70,7 +74,7 @@ export default class CoinCard extends Component {
 
 const styles = StyleSheet.create({
   card: {
-    height: 190, 
+    height: DeviceInfo.hasNotch() == 1 ? 210 : 190, 
     width: Dimensions.get('window').width, 
     justifyContent: 'center',
     alignItems: 'flex-start',
@@ -94,21 +98,21 @@ const styles = StyleSheet.create({
   },
   arrowWrapper: {
     position: 'absolute',
-    left: 10,
-    top: 10
+    left: DeviceInfo.hasNotch() == 1 ? 20 : 10,
+    top: DeviceInfo.hasNotch() == 1 ? 30 : 10,
   },
   logo: {
-    width: 70, 
-    height: 80,
-    shadowColor: "#181818",
-    shadowOffset: {
-  	width: 7,
-  	height: 7,
+    width: 35, 
+    height: 35,
+    marginLeft: 10
   },
-  shadowOpacity: 1,
-  shadowRadius: 7,
-
-  elevation: 30,
-  marginTop: 25
+  balanceWrapper: {
+    position: 'absolute',
+    right: 10,
+    alignItems: 'flex-end'
   },
+  infoWrapper: {
+    position: 'absolute',
+    left: 55,
+  }
 })

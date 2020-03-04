@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       alignItems: 'flex-start',
       flexDirection: 'row',
-      marginTop: DeviceInfo.hasNotch() == 1 ? 70 : 30
+      marginTop: 0
     },
     balanceWrapper: {
       position: 'absolute',

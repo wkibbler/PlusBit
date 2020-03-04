@@ -7,6 +7,7 @@ import Text from '../components/Text'
 import GradientButton from '../components/GradentButton'
 import RNSecureKeyStore, {ACCESSIBLE} from "react-native-secure-key-store";
 import bcrypt from 'react-native-bcrypt'
+import { sha256 } from 'react-native-sha256';
 
 export default class App extends Component {
 
@@ -62,17 +63,18 @@ export default class App extends Component {
       }
     }
    }
-
    register = () => {
      if (this.state.registerPassword == '' || this.state.registerUsername == '' || this.state.confirmPassword == ''){ Alert.alert('Please fill out all feilds') } else {
        if (this.state.registerPassword !== this.state.confirmPassword){ Alert.alert('Passwords do not match') } else {
-        let userData = {username: this.state.registerUsername, password: bcrypt.hashSync(this.state.registerPassword, 10), biometrics: false, defaultUnit: 'coin', fiatUnit: 'USD', activeCoins: ['BTC', 'ILC']}
-        RNSecureKeyStore.set("userData", JSON.stringify(userData), {accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY})
+        sha256(this.state.registerUsername + this.state.registerPassword).then( hash => {
+          let userData = {username: this.state.registerUsername, password: bcrypt.hashSync(this.state.registerPassword, 10), biometrics: false, defaultUnit: 'coin', fiatUnit: 'USD', activeCoins: ['BTC', 'ILC'], hash: hash}
+          RNSecureKeyStore.set("userData", JSON.stringify(userData), {accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY})
         .then((res) => {
             this.props.dashboard()
         }, (err) => {
             Alert.alert('There was an error saving profile')
-        });
+        })
+        })
        }
      }
    }

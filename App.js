@@ -15,6 +15,7 @@ import Login from './app/Login'
 import Dashboard from './app/Dashboard'
 import Util from './app/Util'
 import RNSecureKeyStore, {ACCESSIBLE} from "react-native-secure-key-store";
+import Keys from './components/GenerateKeys'
 
 const width = Dimensions.get('window').width
 const height = Dimensions.get('window').height
@@ -31,7 +32,8 @@ export default class App extends Component {
       hashSplash: false,
       utilArg: '',
       user: {activeCoins: []},
-      secondaryUtilArg: ''
+      secondaryUtilArg: '',
+      keys: {}
     }
   }
   componentDidMount(){
@@ -106,8 +108,9 @@ export default class App extends Component {
 
   updateUser = () => {
     RNSecureKeyStore.get("userData").then((res) => {
-      console.log(JSON.parse(res))
-      this.setState({user: JSON.parse(res)})
+      let json = JSON.parse(res)
+      console.log(json)
+      this.setState({user: json, keys: Keys(json.hash)})
     })
   }
 
@@ -146,6 +149,7 @@ export default class App extends Component {
             utilToLogin={() => this.utilToLogin()}
             utilToDashboard={() => this.utilToDashboard()}
             args={this.state.secondaryUtilArg}
+            keys={this.state.keys}
           />
         </Animated.View>
       </Animated.View>
