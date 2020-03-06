@@ -40,7 +40,7 @@ export default class CoinCard extends Component {
     } else if (coin == 'ZEL'){
       return {
         gradient: ['rgb(64, 31, 122)', 'rgb(173, 36, 117)'],
-        name: 'ZelCash'
+        name: 'ZEL'
       }
     } else if (coin == 'SAFE'){
       return {
@@ -99,8 +99,8 @@ const styles = StyleSheet.create({
   shadowOpacity: 1,
   shadowRadius: 7,
 
-  elevation: 30,
-  
+  elevation: 40,
+  backgroundColor: 'black',
   },
   arrow: {
     width: 40,

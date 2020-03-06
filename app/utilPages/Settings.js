@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Dimensions, ScrollView, TouchableOpacity, Alert, Animated, Image, Clipboard } from 'react-native';
+import { View, StyleSheet, Dimensions, ScrollView, TouchableOpacity, Alert, Animated, Image, Clipboard, Linking } from 'react-native';
 import Card from '../../components/Card'
 import Text from '../../components/Text'
 import RNSecureKeyStore, {ACCESSIBLE} from "react-native-secure-key-store";
@@ -107,6 +107,17 @@ export default class Settings extends Component {
                       {label: 'EUR', value: 'EUR'},
                       {label: 'JPY', value: 'JPY'}
                   ]} /></View>
+                </Card>
+                <Card top={30} width={width - 50} height={80}>
+                  <View style={{flexDirection: 'row', marginTop: 12}}>
+                  <Text size={12}>From </Text>
+                  <TouchableOpacity onPress={() => Linking.openURL('https://plusbit.tech')}><Text color='#00cbb3' size={12}>PlusBit </Text></TouchableOpacity>
+                  <Text size={12}>© 2020 All rights reserved</Text>
+                  </View>
+                  <View style={{flexDirection: 'row', marginTop: 10}}>
+                  <Text size={12}>By </Text>
+                  <TouchableOpacity onPress={() => Linking.openURL('https://libtechnologies.io')}><Text color='#00cbb3' size={12}>L.I.B. Technologies </Text></TouchableOpacity>
+                  </View>
                 </Card>
           </ScrollView>
         </View>

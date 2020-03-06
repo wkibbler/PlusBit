@@ -7,6 +7,7 @@ export default function(hash){
     var BitcoinKeyPair = new lib.ECPair(d, null, {network: lib.networks.bitcoin});
     var ZcashKeyPair = new lib.ECPair(d, null, {network: lib.networks.zcash})
     var safeKeyPair = new lib.ECPair(d, null, {network: lib.networks.SAFE})
+    console.log(safeKeyPair.getAddress())
     return {
         BTCaddress: BitcoinKeyPair.getAddress(),
         BTCprivatekey: BitcoinKeyPair.toWIF(),

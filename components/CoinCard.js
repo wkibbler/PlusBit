@@ -46,7 +46,7 @@ export default class CoinCard extends Component {
     } else if (coin == 'ZEL'){
       return {
         gradient: ['rgb(64, 31, 122)', 'rgb(173, 36, 117)'],
-        name: 'ZelCash'
+        name: 'ZEL'
       }
     } else if (coin == 'SAFE'){
       return {
