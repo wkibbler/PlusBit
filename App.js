@@ -31,7 +31,7 @@ export default class App extends Component {
       util: new Animated.Value(0),
       hashSplash: false,
       utilArg: '',
-      user: {activeCoins: []},
+      user: {activeCoins: [], fiatUnit: ''},
       secondaryUtilArg: '',
       keys: {}
     }
@@ -85,6 +85,7 @@ export default class App extends Component {
   }
 
   utilToLogin = () => {
+    this.updateUser()
     Animated.timing(this.state.dashboard, {
       toValue: 0,
       duration: 1000,
@@ -103,7 +104,6 @@ export default class App extends Component {
     setTimeout(() => {
       this.login()
     }, 1000)
-    this.setState({user: {}})
   }
 
   updateUser = () => {
@@ -111,7 +111,9 @@ export default class App extends Component {
       let json = JSON.parse(res)
       console.log(json)
       this.setState({user: json, keys: Keys(json.hash)})
-    })
+    }, (err) => {
+      this.setState({user: {activeCoins: [], fiatUnit: ''}})
+  })
   }
 
   utilToDashboard = () => {
@@ -125,6 +127,18 @@ export default class App extends Component {
       duration: 1000,
       easing: Easing.elastic(1.2)
     }).start();
+  }
+
+  updateFiatUnit = (unit) => {
+    let user = this.state.user
+    user.fiatUnit = unit
+    this.setState({user: user})
+    RNSecureKeyStore.set("userData", JSON.stringify(user), {accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY})
+        .then((res) => {
+          //not sure
+        }, (err) => {
+            Alert.alert('There was an error saving profile locally')
+        })
   }
 
   render() {
@@ -150,6 +164,8 @@ export default class App extends Component {
             utilToDashboard={() => this.utilToDashboard()}
             args={this.state.secondaryUtilArg}
             keys={this.state.keys}
+            user={this.state.user}
+            updateFiatUnit={(res) => this.updateFiatUnit(res)}
           />
         </Animated.View>
       </Animated.View>

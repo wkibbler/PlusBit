@@ -52,14 +52,14 @@ export default class Dashboard extends Component {
             <Image source={require('../assets/vertical-4.png')} style={styles.title}/>
             <View style={styles.balanceWrapper}>
               <Text size={28} bold>Balance</Text>
-              <Text size={20}>0.00 USD</Text>
+              <Text size={20}>0.00 {this.props.user.fiatUnit}</Text>
             </View>
           </LinearGradient>
           <ScrollView style={{width: Dimensions.get('window').width}} contentContainerStyle={{alignItems: 'center', height: Dimensions.get('window').height - 270}}>
           {
             this.props.user.activeCoins.map((item, index) => (
               <TouchableOpacity onPress={() => this.props.util('wallet', {name: item})} style={styles.coinWrapper}>
-                 <CoinCard coin={item}/>
+                 <CoinCard unit={this.props.user.fiatUnit} coin={item}/>
               </TouchableOpacity>
             ))
           }

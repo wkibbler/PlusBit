@@ -63,9 +63,12 @@ export default class CoinCard extends Component {
             <Image style={styles.icon} source={this.getLogo(this.props.coin)}/>
             <View style={styles.cardInfo}>
               <Text size={20} bold>{this.getCoinData(this.props.coin).name}</Text>
-              <Text size={13}>0.0000 {this.props.coin} | 0.00 USD</Text>
+              <Text size={13}>0.0000 {this.props.coin} | 0.00 {this.props.unit}</Text>
             </View>
-            <Image style={styles.arrow} source={require('../assets/arrow.png')}/>
+            <View style={{flexDirection: 'row', marginTop: 15, justifyContent: 'center'}}>
+              <Text bold size={10}>STATUS: </Text>
+              <Image style={styles.statusDot} source={require('../assets/status-1.png')}/>
+            </View>
         </LinearGradient>
       </Animated.View>
     );
@@ -98,4 +101,10 @@ const styles = StyleSheet.create({
     height: 30,
     marginTop: 40
   },
+  statusDot: {
+    width: 10,
+    height: 10,
+    marginTop: 2,
+    marginLeft: 2
+  }
 })

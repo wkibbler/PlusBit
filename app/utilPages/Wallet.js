@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Dimensions, Animated, TouchableOpacity, ScrollView, KeyboardAvoidingView, Easing, Image, Clipboard, Alert, Platform } from 'react-native';
+import { View, StyleSheet, Dimensions, Animated, TouchableOpacity, ScrollView, KeyboardAvoidingView, TextInput, Image, Clipboard, Alert, Platform } from 'react-native';
 import Card from '../../components/Card'
 import Text from '../../components/Text'
 import WalletHeader from '../../components/WalletHeader'
@@ -8,40 +8,61 @@ import LineGradient from '../../components/LineGradient'
 import QRCode from 'react-native-qr-generator'
 import DeviceInfo from 'react-native-device-info'
 import txs from './exampleTxs'
+import Slider from '@react-native-community/slider';
+import GradientButton from '../../components/GradentButton'
+
+const width = Dimensions.get('window').width
+const height = Dimensions.get('window').height
 
 export default class Wallet extends Component {
 
     constructor(){
         super()
         this.state = {
-            isSend: true,
+            isActivity: true,
             isReceive: false,
-            sendPosition: new Animated.Value(Dimensions.get('window').width / 2),
-            receivePostion: new Animated.Value(Dimensions.get('window').width / 2),
+            isSend : false,
+            fee: 0.0001
         }
     }
 
     switchToReceive = () => {
-        this.setState({isSend: false, isReceive: true})
-        Animated.sequence([
-            Animated.timing(this.state.sendPosition, { toValue: -Dimensions.get('window').width / 2, easing: Easing.elastic(1.2),  duration: 250}),
-            Animated.timing(this.state.receivePostion, { toValue: -Dimensions.get('window').width / 2, easing: Easing.elastic(1.2),  duration: 250}),
-          ]).start()
+        this.setState({isActivity: false, isReceive: true, isSend: false})
+    }
+
+    SwitchToActivity = () => {
+        this.setState({isActivity: true, isReceive: false, isSend: false})
     }
 
     SwitchToSend = () => {
-        this.setState({isSend: true, isReceive: false})
-        Animated.sequence([
-            Animated.timing(this.state.receivePostion, { toValue: Dimensions.get('window').width / 2, easing: Easing.elastic(1.2),  duration: 250}),
-            Animated.timing(this.state.sendPosition, { toValue: Dimensions.get('window').width / 2, easing: Easing.elastic(1.2),  duration: 250}),
-          ]).start()
+        this.setState({isActivity: false, isReceive: false, isSend: true})
     }
 
-    getClipboardIcon = () => {
+    getCoinInfo = () => {
         if (this.props.props.args.name == 'BTC'){
-            return require('../../assets/BTC-clipboard.png')
+            return {
+                clipboard: require('../../assets/BTC-clipboard.png'),
+                color: 'rgb(233, 122, 22)',
+                qr: require('../../assets/BTC-qr.png')
+            }
         } else if (this.props.props.args.name == 'ILC'){
-            return require('../../assets/ILC-clipboard.png')
+            return {
+                clipboard: require('../../assets/ILC-clipboard.png'),
+                color: 'rgb(19, 64, 115)',
+                qr: require('../../assets/ILC-qr.png')
+            }
+        } else if (this.props.props.args.name == 'ZEL'){
+            return {
+                clipboard: require('../../assets/ZEL-clipboard.png'),
+                color: 'rgb(54, 17, 101)',
+                qr: require('../../assets/ZEL-qr.png')
+            }
+        } else if (this.props.props.args.name == 'SAFE'){
+            return {
+                clipboard: require('../../assets/SAFE-clipboard.png'),
+                color: 'rgb(63, 149, 184)',
+                qr: require('../../assets/SAFE-qr.png')
+            }
         }
     }
 
@@ -57,19 +78,29 @@ export default class Wallet extends Component {
   render() {
     return (
         <View style={styles.background}>
-            <WalletHeader coin={this.props.props.args.name}>
+            <WalletHeader fiatUnit={this.props.props.user.fiatUnit} coin={this.props.props.args.name}>
               <Row style={styles.toggle}>
-                    <TouchableOpacity onPress={this.SwitchToSend} style={{width: 100, alignItems: 'center', marginLeft: 50}}>
-                      <Text size={18} bold>WALLET</Text>
+                    <TouchableOpacity onPress={this.SwitchToActivity} style={{width: 100, alignItems: 'center', marginLeft: 20}}>
+                      <Text size={18} bold>ACTIVITY</Text>
                       {
-                          this.state.isSend ? (
+                          this.state.isActivity ? (
                             <LineGradient color='white' top={2} width={100}/>
                           ) : (
                             <LineGradient clear top={2} width={1}/>
                           )
                       }
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={this.switchToReceive} style={{width: 100, alignItems: 'center', marginRight: 50}}>
+                    <TouchableOpacity onPress={this.SwitchToSend} style={{width: 100, alignItems: 'center', marginRight: 0}}>
+                        <Text size={18} bold>SEND</Text>
+                        {
+                            this.state.isSend ? (
+                                <LineGradient color='white' top={2} width={100}/>
+                            ) : (
+                                <LineGradient clear top={2} width={100}/>
+                            )
+                        }
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={this.switchToReceive} style={{width: 100, alignItems: 'center', marginRight: 20}}>
                         <Text size={18} bold>RECEIVE</Text>
                         {
                             this.state.isReceive ? (
@@ -78,13 +109,14 @@ export default class Wallet extends Component {
                                 <LineGradient clear top={2} width={100}/>
                             )
                         }
-                    </TouchableOpacity>
+                    </TouchableOpacity>                
                 </Row>
             </WalletHeader>
-            <ScrollView style={{width: Dimensions.get('window').width, marginBottom: 20, height: Dimensions.get('window').height - 210}} contentContainerStyle={{alignItems: 'center'}}>
+            <ScrollView style={{width: Dimensions.get('window').width, marginBottom: 20, height: Dimensions.get('window').height - 210}} contentContainerStyle={{}}>
             <KeyboardAvoidingView behavior="position">
-            <View style={{flexDirection: 'row'}}>
-                <Animated.View style={{transform: [{translateX: this.state.sendPosition}], width: Dimensions.get('window').width, alignItems: 'center'}}>
+                {
+                    this.state.isActivity ? (
+                        <Animated.View style={{/*transform: [{translateX: this.state.activityPosition}],*/ width: Dimensions.get('window').width, alignItems: 'center'}}>
                   <View style={{marginTop: 20}}>
                     {
                         txs.map((item, index) => (
@@ -105,12 +137,13 @@ export default class Wallet extends Component {
                     }
                   </View>
                 </Animated.View>
-                <Animated.View style={{transform: [{translateX: this.state.receivePostion}], width: Dimensions.get('window').width, alignItems: 'center'}}>
+                    ) : this.state.isReceive ? (
+                        <Animated.View style={{/*transform: [{translateX: this.state.receivePostion}],*/ width: Dimensions.get('window').width, alignItems: 'center'}}>
                   <TouchableOpacity onPress={this.copyAddress}>
                     <Card justifyCenter width={370} height={50} top={30}>
                       <View style={{flexDirection: 'row', justifyContent: 'center'}}>
                         <Text center color="grey">{this.props.props.keys[`${this.props.props.args.name}address`]}</Text>
-                        <Image style={styles.copyIcon} source={this.getClipboardIcon()}/>
+                        <Image style={styles.copyIcon} source={this.getCoinInfo().clipboard}/>
                       </View>
                     </Card>
                   </TouchableOpacity>
@@ -123,18 +156,32 @@ export default class Wallet extends Component {
                     />
                   </Card>
                 </Animated.View>
-            </View>
+                    ) : this.state.isSend ? (
+                        <View style={{alignItems: 'center'}}>
+                            <Card style={{flexDirection: 'row'}} justifyCenter top={50} width={300} height={50}>
+                              <TextInput placeholder='Address' placeholderTextColor="grey" style={styles.input} onChangeText={(loginPassword) => this.setState({loginPassword})} value={this.state.loginPassword}/>
+                              <TouchableOpacity style={{position: 'absolute', right: 15}}>
+                                <Image style={styles.qr} source={this.getCoinInfo().qr}/>
+                              </TouchableOpacity>
+                            </Card>
+                            <Card justifyCenter top={30} width={300} height={50}>
+                              <TextInput placeholder='Amount' placeholderTextColor="grey" style={styles.input} onChangeText={(loginPassword) => this.setState({loginPassword})} value={this.state.loginPassword}/>
+                            </Card>
+                            <Slider
+                              style={{width: 210, height: 40, marginTop: 20}}
+                              minimumValue={0.00001}
+                              maximumValue={0.001}
+                              minimumTrackTintColor={this.getCoinInfo().color}
+                              maximumTrackTintColor="grey"
+                              onValueChange={(fee) => this.setState({fee: fee.toFixed(5)})}
+                             />
+                            <Text color="grey">Fee: {this.state.fee}</Text>
+                            <GradientButton title="SEND" top={50} color={this.getCoinInfo().color}/>
+                        </View>
+                    ) : null
+                }
             </KeyboardAvoidingView>
             </ScrollView>
-            {
-                this.state.isSend ? (
-                    <TouchableOpacity style={styles.createWrapper}>
-                        <Card justifyCenter width={200} height={50}>
-                            <Text bold>Make new transaction</Text>
-                        </Card>
-                    </TouchableOpacity>
-                ) : null
-            }
         </View>
     )
   }
@@ -194,4 +241,14 @@ const styles = StyleSheet.create({
         marginTop: 13,
         justifyContent: 'center',
       },
+      logo: {
+        width: 150,
+        height: 150,
+        position: 'absolute',
+        right: 0
+    },
+    qr: {
+        width: 25,
+        height: 25,
+    }
 });

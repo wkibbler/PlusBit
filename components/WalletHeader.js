@@ -50,6 +50,16 @@ export default class CoinCard extends Component {
     }
   }
 
+  getFiat = () => {
+    if (this.props.fiatUnit == 'USD') {
+      return '$'
+    } else if (this.props.fiatUnit == 'GBP') {
+      return '£'
+    } else if (this.props.fiatUnit == 'EUR') {
+      return '€'
+    }
+  }
+
   render() {
     return (
       <View style={styles.shadow}>
@@ -58,11 +68,11 @@ export default class CoinCard extends Component {
             <Image style={styles.logo} source={this.getLogo(this.props.coin)}/>
             <View style={styles.balanceWrapper}>
               <Text bold>5.3213 BTC</Text>
-              <Text size={12}>321344 USD</Text>
+              <Text size={12}>321344 {this.props.fiatUnit}</Text>
             </View>
             <View style={styles.infoWrapper}>
               <Text bold>{this.getCoinData(this.props.coin).name}</Text>
-              <Text size={12}>$8,728.20</Text>
+              <Text size={12}>{this.getFiat()}8,728.20</Text>
             </View>
           </Card>
             {this.props.children}
