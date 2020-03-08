@@ -37,7 +37,7 @@ export default class CoinCard extends Component {
       return {
         gradient: ['rgb(233, 122, 22)', 'rgb(247, 156, 74)'],
         name: 'Bitcoin',
-        balance: this.props.balance.BTC
+        balance: this.props.balance.BTC,
       }
     } else if (coin == 'ILC'){
       return {
@@ -71,7 +71,7 @@ export default class CoinCard extends Component {
             </View>
             <View style={{flexDirection: 'row', marginTop: 15, justifyContent: 'center'}}>
               <Text bold size={10}>STATUS: </Text>
-              <Image style={styles.statusDot} source={this.props.status ? require('../assets/status-1.png') : require('../assets/status-2.png')}/>
+              <Image style={styles.statusDot} source={this.getCoinData(this.props.coin).balance.status == 2 ? require('../assets/status-2.png') : require('../assets/status-1.png')}/>
             </View>
         </LinearGradient>
       </Animated.View>

@@ -228,6 +228,7 @@ export default class Wallet extends Component {
                               minimumTrackTintColor={this.getCoinInfo().color}
                               maximumTrackTintColor="grey"
                               onValueChange={(fee) => this.setState({fee: fee.toFixed(7)})}
+                              thumbTintColor='grey'
                              />
                             <Text color="grey">Fee: {this.state.fee}</Text>
                             <GradientButton onPress={this.sendTx} title="SEND" top={50} color={this.getCoinInfo().color}/>

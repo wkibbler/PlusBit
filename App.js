@@ -37,7 +37,7 @@ export default class App extends Component {
       secondaryUtilArg: '',
       keys: {},
       spinner: false,
-      balanceData: {totalBalance: 0.0000,BTC:{balance: 0.0000,fiatBalance: 0.00,transactions:[]},ILC:{balance:0.0000,fiatBalance:0.00,transactions:[]},ZEL:{balance:0.0000,fiatBalance:0.00,transactions:[]},SAFE:{balance:0.0000,fiatBalance:0.00,transactions:[]}},
+      balanceData: {totalBalance: 0.0000,BTC:{balance: 0.0000,fiatBalance: 0.00,transactions:[], status:2},ILC:{balance:0.0000,fiatBalance:0.00,transactions:[],status:2},ZEL:{balance:0.0000,fiatBalance:0.00,transactions:[],status:2},SAFE:{balance:0.0000,fiatBalance:0.00,transactions:[],status:2}},
       status: true
     }
   }
@@ -120,10 +120,9 @@ export default class App extends Component {
       setInterval(() => {
         this.updateRemoteData()
       }, 30000)
-      return fetch(`http://78.141.209.216:3005/plusbit/${json.fiatUnit}/${keys.BTCaddress}/${keys.ILCaddress}/${keys.ZELaddress}/${keys.SAFEaddress}`)
+      return fetch(`https://plusbit-api.libtechnologies.io/plusbit/${json.fiatUnit}/${keys.BTCaddress}/${keys.ILCaddress}/${keys.ZELaddress}/${keys.SAFEaddress}`)
       .then((response) => response.json())
       .then((responseJson) => {
-        console.log(responseJson)
         this.setState({balanceData: responseJson, spinner: false, status: true})
       }).catch((error) => {
         this.setState({spinner: false, status: false})
@@ -137,7 +136,7 @@ export default class App extends Component {
   } 
 
   updateRemoteData(){
-    return fetch(`http://78.141.209.216:3005/plusbit/${this.state.user.fiatUnit}/${this.state.keys.BTCaddress}/${this.state.keys.ILCaddress}/${this.state.keys.ZELaddress}/${this.state.keys.SAFEaddress}`)
+    return fetch(`https://plusbit-api.libtechnologies.io/plusbit/${this.state.user.fiatUnit}/${this.state.keys.BTCaddress}/${this.state.keys.ILCaddress}/${this.state.keys.ZELaddress}/${this.state.keys.SAFEaddress}`)
       .then((response) => response.json())
       .then((responseJson) => {
         console.log('Updating wallet data')

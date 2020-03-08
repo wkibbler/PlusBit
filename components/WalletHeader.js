@@ -66,7 +66,7 @@ export default class CoinCard extends Component {
             </View>
             <View style={styles.infoWrapper}>
               <Text bold>{this.getCoinData(this.props.coin).name}</Text>
-              <Text size={12}>{this.getCoinData(this.props.coin).balance.price}</Text>
+              <Text size={12}>{this.getCoinData(this.props.coin).balance.price || 'Network Error'}</Text>
             </View>
           </Card>
             {this.props.children}
