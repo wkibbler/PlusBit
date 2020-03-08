@@ -184,6 +184,8 @@ PODS:
     - React-cxxreact (= 0.61.5)
     - React-jsi (= 0.61.5)
   - React-jsinspector (0.61.5)
+  - react-native-fingerprint-scanner (4.0.0):
+    - React
   - react-native-randombytes (3.5.3):
     - React
   - react-native-slider (2.0.8):
@@ -251,6 +253,7 @@ DEPENDENCIES:
   - React-jsi (from `../node_modules/react-native/ReactCommon/jsi`)
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
+  - react-native-fingerprint-scanner (from `../node_modules/react-native-fingerprint-scanner`)
   - react-native-randombytes (from `../node_modules/react-native-randombytes`)
   - "react-native-slider (from `../node_modules/@react-native-community/slider`)"
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
@@ -305,6 +308,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsiexecutor"
   React-jsinspector:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
+  react-native-fingerprint-scanner:
+    :path: "../node_modules/react-native-fingerprint-scanner"
   react-native-randombytes:
     :path: "../node_modules/react-native-randombytes"
   react-native-slider:
@@ -357,6 +362,7 @@ SPEC CHECKSUMS:
   React-jsi: cb2cd74d7ccf4cffb071a46833613edc79cdf8f7
   React-jsiexecutor: d5525f9ed5f782fdbacb64b9b01a43a9323d2386
   React-jsinspector: fa0ecc501688c3c4c34f28834a76302233e29dc0
+  react-native-fingerprint-scanner: 4c69cf0f6b54bfec96fab0d263fd77afbd3b261b
   react-native-randombytes: 991545e6eaaf700b4ee384c291ef3d572e0b2ca8
   react-native-slider: b2f361499888302147205f17f6fffa921a7bda70
   React-RCTActionSheet: 600b4d10e3aea0913b5a92256d2719c0cdd26d76

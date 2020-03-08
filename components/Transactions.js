@@ -22,7 +22,13 @@ function getCoinData(sym, bls){
             explorer: 'https://explorer.zel.cash',
             network: lib.networks.zcash
         }
-    }
+    } else if (sym == 'SAFE'){
+      return {
+          balance: Number(bls.SAFE.balance),
+          explorer: 'https://explorer.safecoin.org',
+          network: lib.networks.SAFE
+      }
+  }
 }
 
 export default function(to, amount, fee, from, priv, bls, coin, cb){
@@ -39,10 +45,11 @@ export default function(to, amount, fee, from, priv, bls, coin, cb){
               let { inputs, outputs, fee } = coinSelect(responseJson, targets, feeRate);
               var builder = new lib.TransactionBuilder(coinData.network);
               //zcash sapling support
-              if (coin == "ZEL"){
+              if (coin == "ZEL" || coin == 'SAFE'){
                 builder.setVersion(lib.Transaction.ZCASH_SAPLING_VERSION);
                 builder.setVersionGroupId(parseInt('0x892F2085', 16));
-                axios.get('https://explorer.zel.cash/api/status').then(function (status) {
+                console.log('test')
+                axios.get(`${coinData.explorer}/api/status`).then(function (status) {
                   builder.setExpiryHeight(status.info.blocks + 100);
                 }).catch(function (error) {
                   console.log(error);
@@ -61,7 +68,7 @@ export default function(to, amount, fee, from, priv, bls, coin, cb){
               builder.addOutput(to, Math.ceil(amount * 100000000));
               builder.addOutput(from, changeAm);
               //Siging transaction
-              if (coin == "ZEL"){
+              if (coin == "ZEL" || coin == 'SAFE'){
                 inputs.forEach((v,i) => {builder.sign(i, key, '', lib.Transaction.SIGHASH_SINGLE, sum)})
               } else {
                 inputs.forEach((v,i) => {builder.sign(i, key)})

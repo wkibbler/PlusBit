@@ -4,6 +4,8 @@ import Card from '../../components/Card'
 import Text from '../../components/Text'
 import RNSecureKeyStore, {ACCESSIBLE} from "react-native-secure-key-store";
 import Picker from '../../components/Picker'
+import ToggleSwitch from 'toggle-switch-react-native'
+import FingerprintScanner from 'react-native-fingerprint-scanner';
 
 const width = Dimensions.get('window').width
 const height = Dimensions.get('window').height
@@ -14,8 +16,14 @@ export default class Settings extends Component {
         super()
         this.state = {
             privKeyHeight: new Animated.Value(90),
-            showPrivKeys: false
+            showPrivKeys: false,
+            user: {biometrics: false}
         }
+    }
+
+    componentDidMount(){
+        console.log(this.props.props.user)
+        this.setState({user: this.props.props.user})
     }
 
     deleteWallet = () => {
@@ -61,6 +69,34 @@ export default class Settings extends Component {
     copyPrivateKey = (sym) => {
         Clipboard.setString(this.props.props.keys[`${sym}address`])
         Alert.alert('Copied to clipboard')
+    }
+
+    toggleBiometrics = (res) => {
+        let user = this.state.user;
+        user.biometrics = res;
+        if (res){
+            FingerprintScanner.isSensorAvailable().then(biometryType => {
+                this.setState({user: user})
+                RNSecureKeyStore.set("userData", JSON.stringify(this.state.user), {accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY})
+                .then((res) => {
+                //Alert.alert('Done')
+                }, (err) => {
+                user.biometrics = false
+                this.setState({user: user})
+                 Alert.alert('Error', 'There was an error saving user data')
+                })
+            }).catch(error => Alert.alert('Biometrics not available'));
+        } else {
+            this.setState({user: user})
+            RNSecureKeyStore.set("userData", JSON.stringify(this.state.user), {accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY})
+                .then((res) => {
+                //Alert.alert('Done')
+                }, (err) => {
+                user.biometrics = false
+                this.setState({user: user})
+                 Alert.alert('Error', 'There was an error saving user data')
+            })
+        }
     }
 
   render() {
@@ -134,8 +170,17 @@ export default class Settings extends Component {
                       {label: 'SAR', value: 'SAR'},
                       {label: 'SEK', value: 'SEK'},
                       {label: 'UAH', value: 'UAH'}
-                      //try,usd,eur,chf,cad,aud,gbp,jpy,nzd,cny,zar,thb,php,krw,vnd,myr,rub,inr,sgd,hkd,ars,brl,dkk,idr,kwd,mxn,nok,pln,pkr,sar,sek,uah
                   ]} /></View>
+                </Card>
+                <Card justifyCenter width={width - 50} height={70} top={30}>
+                  <ToggleSwitch
+                    isOn={this.state.user.biometrics}
+                    onColor="#00cbb3"
+                    offColor="grey"
+                    label="Enable Biometrics"
+                    labelStyle={{ color: "white", fontFamily: 'Poppins-Regular', fontWeight: 'bold', fontSize: 15 }}
+                    onToggle={isOn => this.toggleBiometrics(isOn)}
+                  />
                 </Card>
                 <Card top={30} width={width - 50} height={80}>
                   <View style={{flexDirection: 'row', marginTop: 12}}>

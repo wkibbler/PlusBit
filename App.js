@@ -17,6 +17,7 @@ import Util from './app/Util'
 import RNSecureKeyStore, {ACCESSIBLE} from "react-native-secure-key-store";
 import Keys from './components/GenerateKeys'
 import Spinner from 'react-native-loading-spinner-overlay'
+import FingerprintScanner from 'react-native-fingerprint-scanner';
 
 
 const width = Dimensions.get('window').width
@@ -42,9 +43,26 @@ export default class App extends Component {
     }
   }
   componentDidMount(){
-    setTimeout(() => {
-      this.login()
-    }, 1800);
+    RNSecureKeyStore.get("userData").then((res) => {
+      let json = JSON.parse(res)
+      if (json.biometrics){
+        // some sort of modal for android
+        FingerprintScanner.authenticate({ description: 'Scan your fingerprint on the device scanner to continue' }).then(() => {
+          this.setState({modal: false})
+          this.dashboard()
+        }).catch((error) => {
+          this.login()
+        });
+      } else {
+        setTimeout(() => {
+          this.login()
+        }, 1800);
+      }
+    }).catch((err) => {
+      setTimeout(() => {
+        this.login()
+      }, 1800);
+    })
   }
 
   login = () => {
