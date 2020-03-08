@@ -59,7 +59,7 @@ export default class Settings extends Component {
     }
 
     copyPrivateKey = (sym) => {
-        Clipboard.setString(this.props.props.keys[`${sym}address`])
+        Clipboard.setString(this.props.props.keys[`${sym}privatekey`])
         Alert.alert('Copied to clipboard')
     }
 
