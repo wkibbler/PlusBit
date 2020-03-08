@@ -36,22 +36,26 @@ export default class CoinCard extends Component {
     if (coin == 'BTC'){
       return {
         gradient: ['rgb(233, 122, 22)', 'rgb(247, 156, 74)'],
-        name: 'Bitcoin'
+        name: 'Bitcoin',
+        balance: this.props.balance.BTC
       }
     } else if (coin == 'ILC'){
       return {
         gradient: ['rgb(19, 64, 115)', 'rgb(23, 142, 159)'],
-        name: 'ILCoin'
+        name: 'ILCoin',
+        balance: this.props.balance.ILC
       }
     } else if (coin == 'ZEL'){
       return {
         gradient: ['rgb(64, 31, 122)', 'rgb(173, 36, 117)'],
-        name: 'ZEL'
+        name: 'ZEL',
+        balance: this.props.balance.ZEL
       }
     } else if (coin == 'SAFE'){
       return {
         gradient: ['rgb(77, 166, 197)', 'rgb(121, 204, 232)'],
-        name: 'SafeCoin'
+        name: 'SafeCoin',
+        balance: this.props.balance.SAFE
       }
     }
   }
@@ -63,11 +67,11 @@ export default class CoinCard extends Component {
             <Image style={styles.icon} source={this.getLogo(this.props.coin)}/>
             <View style={styles.cardInfo}>
               <Text size={20} bold>{this.getCoinData(this.props.coin).name}</Text>
-              <Text size={13}>0.0000 {this.props.coin} | 0.00 {this.props.unit}</Text>
+              <Text size={13}>{this.getCoinData(this.props.coin).balance.balance + ' ' + this.props.coin} | {this.getCoinData(this.props.coin).balance.fiatBalance}</Text>
             </View>
             <View style={{flexDirection: 'row', marginTop: 15, justifyContent: 'center'}}>
               <Text bold size={10}>STATUS: </Text>
-              <Image style={styles.statusDot} source={require('../assets/status-1.png')}/>
+              <Image style={styles.statusDot} source={this.props.status ? require('../assets/status-1.png') : require('../assets/status-2.png')}/>
             </View>
         </LinearGradient>
       </Animated.View>

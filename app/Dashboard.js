@@ -52,14 +52,14 @@ export default class Dashboard extends Component {
             <Image source={require('../assets/vertical-4.png')} style={styles.title}/>
             <View style={styles.balanceWrapper}>
               <Text size={28} bold>Balance</Text>
-              <Text size={20}>0.00 {this.props.user.fiatUnit}</Text>
+              <Text size={20}>{this.props.balanceData.totalBalance || '0.00'}</Text>
             </View>
           </LinearGradient>
           <ScrollView style={{width: Dimensions.get('window').width}} contentContainerStyle={{alignItems: 'center', height: Dimensions.get('window').height - 270}}>
           {
             this.props.user.activeCoins.map((item, index) => (
               <TouchableOpacity onPress={() => this.props.util('wallet', {name: item})} style={styles.coinWrapper}>
-                 <CoinCard unit={this.props.user.fiatUnit} coin={item}/>
+                 <CoinCard balance={this.props.balanceData} status={this.props.status} unit={this.props.user.fiatUnit} coin={item}/>
               </TouchableOpacity>
             ))
           }
@@ -94,7 +94,7 @@ export default class Dashboard extends Component {
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <TouchableOpacity onPress={() => this.addAsset('ZEL')} disabled={this.props.user.activeCoins.indexOf('ZEL') == -1 ? false : true} style={[{alignItems: 'center'}, this.props.user.activeCoins.indexOf('ZEL') == -1 ? null : {opacity: 0.5}]}>
                   <Image style={styles.addIcon} source={require('../assets/ZEL.png')}/>
-                  <Text>ZelCash</Text>
+                  <Text>ZEL</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => this.addAsset('SAFE')} disabled={this.props.user.activeCoins.indexOf('SAFE') == -1 ? false : true} style={[{alignItems: 'center'}, this.props.user.activeCoins.indexOf('SAFE') == -1 ? null : {opacity: 0.5}]}>
                   <Image style={styles.addIcon} source={require('../assets/SAFE.png')}/>
@@ -120,7 +120,7 @@ export default class Dashboard extends Component {
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <TouchableOpacity onPress={() => this.removeAsset('ZEL')} disabled={this.props.user.activeCoins.indexOf('ZEL') == -1 ? true : false} style={[{alignItems: 'center'}, this.props.user.activeCoins.indexOf('ZEL') == -1 ? {opacity: 0.5} : null]}>
                   <Image style={styles.addIcon} source={require('../assets/ZEL.png')}/>
-                  <Text>ZelCash</Text>
+                  <Text>ZEL</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => this.removeAsset('SAFE')} disabled={this.props.user.activeCoins.indexOf('SAFE') == -1 ? true : false} style={[{alignItems: 'center'}, this.props.user.activeCoins.indexOf('SAFE') == -1 ? {opacity: 0.5} : null]}>
                   <Image style={styles.addIcon} source={require('../assets/SAFE.png')}/>

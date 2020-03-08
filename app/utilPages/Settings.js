@@ -105,7 +105,36 @@ export default class Settings extends Component {
                       {label: 'USD', value: 'USD'},
                       {label: 'GBP', value: 'GBP'},
                       {label: 'EUR', value: 'EUR'},
-                      {label: 'JPY', value: 'JPY'}
+                      {label: 'JPY', value: 'JPY'},
+                      {label: 'TRY', value: 'TRY'},
+                      {label: 'CHF', value: 'CHF'},
+                      {label: 'CAD', value: 'CAD'},
+                      {label: 'AUD', value: 'AUD'},
+                      {label: 'NZD', value: 'NZD'},
+                      {label: 'CNY', value: 'CNY'},
+                      {label: 'ZAR', value: 'ZAR'},
+                      {label: 'THB', value: 'THB'},
+                      {label: 'PHP', value: 'PHP'},
+                      {label: 'KRW', value: 'KRW'},
+                      {label: 'VND', value: 'VND'},
+                      {label: 'MYR', value: 'MYR'},
+                      {label: 'RUB', value: 'RUB'},
+                      {label: 'IRN', value: 'IRN'},
+                      {label: 'SGD', value: 'SGD'},
+                      {label: 'HKD', value: 'HKD'},
+                      {label: 'ARS', value: 'ARS'},
+                      {label: 'BRL', value: 'BRL'},
+                      {label: 'DKK', value: 'DKK'},
+                      {label: 'IDR', value: 'IDR'},
+                      {label: 'KWD', value: 'KWD'},
+                      {label: 'MXN', value: 'MXN'},
+                      {label: 'NOK', value: 'NOK'},
+                      {label: 'PLN', value: 'PLN'},
+                      {label: 'PKR', value: 'PKR'},
+                      {label: 'SAR', value: 'SAR'},
+                      {label: 'SEK', value: 'SEK'},
+                      {label: 'UAH', value: 'UAH'}
+                      //try,usd,eur,chf,cad,aud,gbp,jpy,nzd,cny,zar,thb,php,krw,vnd,myr,rub,inr,sgd,hkd,ars,brl,dkk,idr,kwd,mxn,nok,pln,pkr,sar,sek,uah
                   ]} /></View>
                 </Card>
                 <Card top={30} width={width - 50} height={80}>
@@ -115,7 +144,7 @@ export default class Settings extends Component {
                   <Text size={12}>© 2020 All rights reserved</Text>
                   </View>
                   <View style={{flexDirection: 'row', marginTop: 10}}>
-                  <Text size={12}>By </Text>
+                  <Text size={12}>Created by </Text>
                   <TouchableOpacity onPress={() => Linking.openURL('https://libtechnologies.io')}><Text color='#00cbb3' size={12}>L.I.B. Technologies </Text></TouchableOpacity>
                   </View>
                 </Card>

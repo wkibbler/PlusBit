@@ -12,6 +12,7 @@
 		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		2A262EE3408C4EE28DF602A1 /* Poppins-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3E8CEBF449344158AAB73E05 /* Poppins-ExtraBold.ttf */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
@@ -19,9 +20,8 @@
 		3BEA12A531E9F029C331E937 /* libPods-PlusBit-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EA965C97A1D40FE14BF85A4D /* libPods-PlusBit-tvOS.a */; };
 		6308854335A6B8C14AD86A79 /* libPods-PlusBit-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6560E8722AF0BDC6B93D12A2 /* libPods-PlusBit-tvOSTests.a */; };
 		A2C59C7A8680184B64F3A1DD /* libPods-PlusBitTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A13CD6A85B00307DAB8DA7F /* libPods-PlusBitTests.a */; };
-		C1F34093FCCBF97732C4C26A /* libPods-PlusBit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 45E98E040839BB4F733EE488 /* libPods-PlusBit.a */; };
-		2A262EE3408C4EE28DF602A1 /* Poppins-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3E8CEBF449344158AAB73E05 /* Poppins-ExtraBold.ttf */; };
 		B73C0B8A2D6043C69926F6C3 /* Poppins-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 539106416FAF45078844FA1B /* Poppins-Regular.ttf */; };
+		C1F34093FCCBF97732C4C26A /* libPods-PlusBit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 45E98E040839BB4F733EE488 /* libPods-PlusBit.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,8 +56,10 @@
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = PlusBit/main.m; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* PlusBit-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "PlusBit-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* PlusBit-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "PlusBit-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3E8CEBF449344158AAB73E05 /* Poppins-ExtraBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-ExtraBold.ttf"; path = "../assets/fonts/Poppins-ExtraBold.ttf"; sourceTree = "<group>"; };
 		3F11CCC576E4905B7810FF89 /* Pods-PlusBit.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PlusBit.debug.xcconfig"; path = "Target Support Files/Pods-PlusBit/Pods-PlusBit.debug.xcconfig"; sourceTree = "<group>"; };
 		45E98E040839BB4F733EE488 /* libPods-PlusBit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-PlusBit.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		539106416FAF45078844FA1B /* Poppins-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Regular.ttf"; path = "../assets/fonts/Poppins-Regular.ttf"; sourceTree = "<group>"; };
 		5831A6704E9C844EF343FCCA /* Pods-PlusBitTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PlusBitTests.release.xcconfig"; path = "Target Support Files/Pods-PlusBitTests/Pods-PlusBitTests.release.xcconfig"; sourceTree = "<group>"; };
 		6560E8722AF0BDC6B93D12A2 /* libPods-PlusBit-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-PlusBit-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A13CD6A85B00307DAB8DA7F /* libPods-PlusBitTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-PlusBitTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -69,8 +71,6 @@
 		EA965C97A1D40FE14BF85A4D /* libPods-PlusBit-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-PlusBit-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
-		3E8CEBF449344158AAB73E05 /* Poppins-ExtraBold.ttf */ = {isa = PBXFileReference; name = "Poppins-ExtraBold.ttf"; path = "../assets/fonts/Poppins-ExtraBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		539106416FAF45078844FA1B /* Poppins-Regular.ttf */ = {isa = PBXFileReference; name = "Poppins-Regular.ttf"; path = "../assets/fonts/Poppins-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -124,6 +124,15 @@
 				00E356F11AD99517003FC87E /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		04529DF7073543369E844A72 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				3E8CEBF449344158AAB73E05 /* Poppins-ExtraBold.ttf */,
+				539106416FAF45078844FA1B /* Poppins-Regular.ttf */,
+			);
+			name = Resources;
 			sourceTree = "<group>";
 		};
 		13B07FAE1A68108700A75B9A /* PlusBit */ = {
@@ -199,19 +208,8 @@
 				96E66D0C5C6C5666B1FC51A3 /* Pods-PlusBitTests.debug.xcconfig */,
 				5831A6704E9C844EF343FCCA /* Pods-PlusBitTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
-		};
-		04529DF7073543369E844A72 /* Resources */ = {
-			isa = "PBXGroup";
-			children = (
-				3E8CEBF449344158AAB73E05 /* Poppins-ExtraBold.ttf */,
-				539106416FAF45078844FA1B /* Poppins-Regular.ttf */,
-			);
-			name = Resources;
-			sourceTree = "<group>";
-			path = "";
 		};
 /* End PBXGroup section */
 
@@ -307,6 +305,9 @@
 						CreatedOnToolsVersion = 6.2;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
+					13B07F861A680F5B00A75B9A = {
+						DevelopmentTeam = 83NP6XF239;
+					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
 						ProvisioningStyle = Automatic;
@@ -323,6 +324,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -645,6 +647,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
+				DEVELOPMENT_TEAM = 83NP6XF239;
 				INFOPLIST_FILE = PlusBit/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -652,7 +655,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.plusbit;
 				PRODUCT_NAME = PlusBit;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -664,6 +667,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 83NP6XF239;
 				INFOPLIST_FILE = PlusBit/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -671,7 +675,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.plusbit;
 				PRODUCT_NAME = PlusBit;
 				VERSIONING_SYSTEM = "apple-generic";
 			};

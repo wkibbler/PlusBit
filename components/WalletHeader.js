@@ -30,33 +30,27 @@ export default class CoinCard extends Component {
     if (coin == 'BTC'){
       return {
         gradient: ['rgb(233, 122, 22)', 'rgb(247, 156, 74)'],
-        name: 'Bitcoin'
+        name: 'Bitcoin',
+        balance: this.props.balance.BTC
       }
     } else if (coin == 'ILC'){
       return {
         gradient: ['rgb(19, 64, 115)', 'rgb(23, 142, 159)'],
-        name: 'ILCoin'
+        name: 'ILCoin',
+        balance: this.props.balance.ILC
       }
     } else if (coin == 'ZEL'){
       return {
         gradient: ['rgb(64, 31, 122)', 'rgb(173, 36, 117)'],
-        name: 'ZEL'
+        name: 'ZEL',
+        balance: this.props.balance.ZEL
       }
     } else if (coin == 'SAFE'){
       return {
         gradient: ['rgb(77, 166, 197)', 'rgb(121, 204, 232)'],
-        name: 'SafeCoin'
+        name: 'SafeCoin',
+        balance: this.props.balance.SAFE
       }
-    }
-  }
-
-  getFiat = () => {
-    if (this.props.fiatUnit == 'USD') {
-      return '$'
-    } else if (this.props.fiatUnit == 'GBP') {
-      return '£'
-    } else if (this.props.fiatUnit == 'EUR') {
-      return '€'
     }
   }
 
@@ -67,12 +61,12 @@ export default class CoinCard extends Component {
           <Card top={DeviceInfo.hasNotch() == 1 ? 50 : 25} width={280} height={80} justifyCenter style={{alignItems: 'flex-start'}}>
             <Image style={styles.logo} source={this.getLogo(this.props.coin)}/>
             <View style={styles.balanceWrapper}>
-              <Text bold>5.3213 BTC</Text>
-              <Text size={12}>321344 {this.props.fiatUnit}</Text>
+              <Text bold>{this.getCoinData(this.props.coin).balance.balance} {this.props.coin}</Text>
+              <Text size={12}>{this.getCoinData(this.props.coin).balance.fiatBalance}</Text>
             </View>
             <View style={styles.infoWrapper}>
               <Text bold>{this.getCoinData(this.props.coin).name}</Text>
-              <Text size={12}>{this.getFiat()}8,728.20</Text>
+              <Text size={12}>{this.getCoinData(this.props.coin).balance.price}</Text>
             </View>
           </Card>
             {this.props.children}
