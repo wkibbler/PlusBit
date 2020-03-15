@@ -49,13 +49,15 @@ export default class Dashboard extends Component {
     return (
         <View style={styles.background}>
           <LinearGradient start={{x: 0, y: 0}} end={{x: 1, y: 0}} colors={['#363535', '#4a4949']} style={[styles.headerCard]}>
+          <View style={styles.header}>
             <Image source={require('../assets/vertical-4.png')} style={styles.title}/>
-            <View style={styles.balanceWrapper}>
+             <View style={styles.balanceWrapper}>
               <Text size={28} bold>Balance</Text>
               <Text size={20}>{this.props.balanceData.totalBalance || '0.00'}</Text>
             </View>
+          </View>
           </LinearGradient>
-          <ScrollView style={{width: Dimensions.get('window').width}} contentContainerStyle={{alignItems: 'center', height: Dimensions.get('window').height - 270}}>
+          <ScrollView style={{width: Dimensions.get('window').width, marginBottom: 70}} contentContainerStyle={{alignItems: 'center'}}>
           {
             this.props.user.activeCoins.map((item, index) => (
               <TouchableOpacity onPress={() => this.props.util('wallet', {name: item})} style={styles.coinWrapper}>
@@ -66,14 +68,17 @@ export default class Dashboard extends Component {
           </ScrollView>
           <View style={styles.navBar}>
             <Row>
-              <TouchableOpacity onPress={() => this.setState({addModal: true})}>
+              <TouchableOpacity style={styles.navIconWrapper} onPress={() => this.setState({addModal: true})}>
                 <Image style={styles.navIcon} source={require('../assets/add.png')}/>
+                <Text size={10} top={3}>Add Asset</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => this.setState({removeModal: true})}>
+              <TouchableOpacity style={styles.navIconWrapper} onPress={() => this.setState({removeModal: true})}>
                 <Image style={styles.navIcon} source={require('../assets/minus.png')}/>
+                <Text size={10} top={3}>Remove Asset</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => this.props.util('settings')}>
+              <TouchableOpacity style={styles.navIconWrapper} onPress={() => this.props.util('settings')}>
                 <Image style={styles.navIcon} source={require('../assets/gear.png')}/>
+                <Text size={10} top={3}>Settings</Text>
               </TouchableOpacity>
             </Row>
           </View>
@@ -96,9 +101,9 @@ export default class Dashboard extends Component {
                   <Image style={styles.addIcon} source={require('../assets/ZEL.png')}/>
                   <Text>ZEL</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => this.addAsset('SAFE')} disabled={this.props.user.activeCoins.indexOf('SAFE') == -1 ? false : true} style={[{alignItems: 'center'}, this.props.user.activeCoins.indexOf('SAFE') == -1 ? null : {opacity: 0.5}]}>
-                  <Image style={styles.addIcon} source={require('../assets/SAFE.png')}/>
-                  <Text>SafeCoin</Text>
+                <TouchableOpacity onPress={() => this.addAsset('BCH')} disabled={this.props.user.activeCoins.indexOf('SAFE') == -1 ? false : true} style={[{alignItems: 'center'}, this.props.user.activeCoins.indexOf('SAFE') == -1 ? null : {opacity: 0.5}]}>
+                  <Image style={styles.addIcon} source={require('../assets/BCH.png')}/>
+                  <Text>Bitcoin Cash</Text>
                 </TouchableOpacity>
               </View>
             </Card>
@@ -122,9 +127,9 @@ export default class Dashboard extends Component {
                   <Image style={styles.addIcon} source={require('../assets/ZEL.png')}/>
                   <Text>ZEL</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => this.removeAsset('SAFE')} disabled={this.props.user.activeCoins.indexOf('SAFE') == -1 ? true : false} style={[{alignItems: 'center'}, this.props.user.activeCoins.indexOf('SAFE') == -1 ? {opacity: 0.5} : null]}>
-                  <Image style={styles.addIcon} source={require('../assets/SAFE.png')}/>
-                  <Text>SafeCoin</Text>
+                <TouchableOpacity onPress={() => this.removeAsset('BCH')} disabled={this.props.user.activeCoins.indexOf('SAFE') == -1 ? true : false} style={[{alignItems: 'center'}, this.props.user.activeCoins.indexOf('SAFE') == -1 ? {opacity: 0.5} : null]}>
+                  <Image style={styles.addIcon} source={require('../assets/BCH.png')}/>
+                  <Text>Bitcoin Cash</Text>
                 </TouchableOpacity>
               </View>
             </Card>
@@ -180,7 +185,7 @@ const styles = StyleSheet.create({
       marginTop: 40
     },
     headerCard: {
-      height: 150, 
+      height: DeviceInfo.hasNotch() == 1 ? height / 6 : height / 5, 
       width: width, 
       justifyContent: 'center',
       alignItems: 'flex-start',
@@ -189,13 +194,12 @@ const styles = StyleSheet.create({
     },
     balanceWrapper: {
       position: 'absolute',
-      top: 50,
       right: 20,
       alignItems: 'flex-end'
     },
     navIcon: {
       width: 30,
-      height: 30
+      height: 30,
     }, 
     profileWrapper: {
       position: 'absolute',
@@ -210,9 +214,7 @@ const styles = StyleSheet.create({
       backgroundColor: '#363535'
     },
     title: {
-      position: 'absolute',
-      left: 20,
-      top: 53,
+      marginLeft: 20,
       width: 70,
       height: 70
     },
@@ -224,4 +226,13 @@ const styles = StyleSheet.create({
       width: 80,
       height: 80,
     },
+    header: {
+      width: width,
+      height: 100,
+      flexDirection: 'row',
+      marginTop: height / 20,
+    },
+    navIconWrapper: {
+      alignItems: 'center'
+    }
 })

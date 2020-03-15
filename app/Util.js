@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, StyleSheet, Dimensions, Animated, Alert } from 'react-native';
 import Settings from './utilPages/Settings'
 import Wallet from './utilPages/Wallet'
-import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
+import GestureRecognizer from '../components/GestureHandler';
 
 
 export default class Util extends Component {
@@ -11,20 +11,34 @@ export default class Util extends Component {
         super()
         this.state = {
             imageOpacity: new Animated.Value(0),
+            refresh: false
         }
+    }
+
+    goBack = () => {
+        this.setState({refresh: true})
+        setTimeout(() => {
+            this.setState({refresh: false})
+        }, 100)
+
     }
 
   render() {
     return (
-        <GestureRecognizer config={{velocityThreshold: 0.000001, directionalOffsetThreshold: 80}} onSwipeRight={() => this.props.utilToDashboard()} style={styles.background}>
+        <GestureRecognizer config={{velocityThreshold: 0.0000001, directionalOffsetThreshold: 80}} onSwipeRight={() => {
+          this.props.utilToDashboard()
+          if (this.props.page == 'wallet'){
+            this.refs.wallet.disMount()
+          }
+          }}>
             {
-                this.props.page == 'settings' ? (
-                    <Settings props={this.props}/>
-                ) : this.props.page == 'wallet' ? (
-                    <Wallet props={this.props}/>
-                ) : null
+              this.props.page == 'settings' ? (
+                <Settings props={this.props}/>
+              ) : this.props.page == 'wallet' ? (
+                <Wallet ref="wallet" props={this.props}/>
+              ) : null
             }
-        </GestureRecognizer>
+         </GestureRecognizer>
     )
   }
 };

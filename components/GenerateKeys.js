@@ -8,7 +8,8 @@ export default function(hash){
     var BitcoinKeyPair = new lib.ECPair(d, null, {network: lib.networks.bitcoin});
     var LICcoinKeyPair = new lib.ECPair(l, null, {network: lib.networks.bitcoin})
     var ZcashKeyPair = new lib.ECPair(d, null, {network: lib.networks.zcash})
-    var safeKeyPair = new lib.ECPair(d, null, {network: lib.networks.SAFE})
+    var BCashKeyPair = new lib.ECPair(d, null, {network: lib.networks.bitcoincash})
+    console.log(BCashKeyPair.getAddress())
     return {
         BTCaddress: BitcoinKeyPair.getAddress(),
         BTCprivatekey: BitcoinKeyPair.toWIF(),
@@ -16,7 +17,7 @@ export default function(hash){
         ILCprivatekey: LICcoinKeyPair.toWIF(),
         ZELaddress: ZcashKeyPair.getAddress(),
         ZELprivatekey: ZcashKeyPair.toWIF(),
-        SAFEaddress: safeKeyPair.getAddress(),
-        SAFEprivatekey: safeKeyPair.toWIF()
+        BCHaddress: BCashKeyPair.getAddress(),
+        BCHprivatekey: BCashKeyPair.toWIF()
     }
 }

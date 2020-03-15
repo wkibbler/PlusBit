@@ -27,7 +27,31 @@ export default class Wallet extends Component {
             fee: 0.0000452,
             address: '',
             amount: 0,
-            spinner: false
+            spinner: false,
+            feeButtons: {
+                left: 'white',
+                middle: 'grey',
+                right: 'grey'
+            }
+        }
+    }
+
+    changeFee = (type) => {
+        if (type == 'economy'){
+            this.setState({feeButtons: {left: 'white', middle: 'grey', right: 'grey'}, fee: 0.0000452})
+            if ((Number(this.state.amount) + Number(this.state.fee)).toFixed(4) == this.getCoinInfo().balance){
+                this.setState({amount: String(Number(this.getCoinInfo().balance - 0.0000452).toFixed(8))})
+            }
+        } else if (type == 'standard'){
+            this.setState({feeButtons: {left: 'grey', middle: 'white', right: 'grey'}, fee: 0.0002265})
+            if ((Number(this.state.amount) + Number(this.state.fee)).toFixed(4) == this.getCoinInfo().balance){
+                this.setState({amount: String(Number(this.getCoinInfo().balance - 0.0002265).toFixed(8))})
+            }
+        } else if (type == 'fast'){
+            this.setState({feeButtons: {left: 'grey', middle: 'grey', right: 'white'}, fee: 0.0004068})
+            if ((Number(this.state.amount) + Number(this.state.fee)).toFixed(4) == this.getCoinInfo().balance){
+                this.setState({amount: String(Number(this.getCoinInfo().balance - 0.0004068).toFixed(8))})
+            }
         }
     }
 
@@ -108,6 +132,11 @@ export default class Wallet extends Component {
         this.setState({amount: String((Number(this.getCoinInfo().balance) - Number(this.state.fee)).toFixed(8))})
     }
 
+    disMount = () => {
+        this.setState({address: '', amount: 0})
+        this.changeFee('economy')
+    }
+
   render() {
     return (
         <View style={styles.background}>
@@ -115,6 +144,7 @@ export default class Wallet extends Component {
           visible={this.state.spinner}
           overlayColor={'rgba(0,0,0,0.8)'}
         />
+        <KeyboardAvoidingView behavior="padding">
             <WalletHeader balance={this.props.props.balanceData} fiatUnit={this.props.props.user.fiatUnit} coin={this.props.props.args.name}>
               <Row style={styles.toggle}>
                     <TouchableOpacity onPress={this.SwitchToActivity} style={{width: 100, alignItems: 'center', marginLeft: 20}}>
@@ -149,12 +179,9 @@ export default class Wallet extends Component {
                     </TouchableOpacity>                
                 </Row>
             </WalletHeader>
-            <ScrollView style={{width: Dimensions.get('window').width, marginBottom: 20, height: Dimensions.get('window').height - 210}} contentContainerStyle={{}}>
-            <KeyboardAvoidingView behavior="position">
                 {
                     this.state.isActivity ? (
-                        <Animated.View style={{/*transform: [{translateX: this.state.activityPosition}],*/ width: Dimensions.get('window').width, alignItems: 'center'}}>
-                  <View style={{marginTop: 20}}>
+                  <View>
                       {
                           this.props.props.balanceData[this.props.props.args.name].transactions.length == 0 ? (
                               <View style={{textAlign: 'center', padding: 20}}>
@@ -162,8 +189,9 @@ export default class Wallet extends Component {
                                 <Text center color="grey">Go to the RECEIVE page to get your wallet address</Text>
                               </View>
                           ) : (
-                              <View>
-                                  {
+                            <View style={{width: width, height: '100%'}}>
+                                <ScrollView style={{width: Dimensions.get('window').width, marginBottom: 10}} contentContainerStyle={{alignItems: 'center'}}>
+                                {
                                     this.props.props.balanceData[this.props.props.args.name].transactions.map((item, index) => (
                                       <TouchableOpacity style={[styles.transaction, {borderTopWidth: index == 0 ? 1 : 0.5, borderBottomWidth: index == txs.length - 1 ? 1 : 0.5}]}>
                                         <View style={styles.txIconCard}>
@@ -180,32 +208,35 @@ export default class Wallet extends Component {
                                       </TouchableOpacity>
                                     ))
                                    }
+                                </ScrollView>
                               </View>
                           )
                       }
                   </View>
-                </Animated.View>
                     ) : this.state.isReceive ? (
-                        <Animated.View style={{/*transform: [{translateX: this.state.receivePostion}],*/ width: Dimensions.get('window').width, alignItems: 'center'}}>
+              <View style={{width: width, height: '100%'}}>
+                <ScrollView style={{width: Dimensions.get('window').width}} contentContainerStyle={{alignItems: 'center'}}>
                   <TouchableOpacity onPress={this.copyAddress}>
-                    <Card justifyCenter width={370} height={50} top={30}>
+                    <Card justifyCenter width={width - 50} height={50} top={30}>
                       <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-                        <Text center color="grey">{this.props.props.keys[`${this.props.props.args.name}address`]}</Text>
+                        <Text size={10} center color="grey">{this.props.props.keys[`${this.props.props.args.name}address`]}</Text>
                         <Image style={styles.copyIcon} source={this.getCoinInfo().clipboard}/>
                       </View>
                     </Card>
                   </TouchableOpacity>
-                  <Card justifyCenter width={370} height={370} top={30}>
+                  <Card justifyCenter width={width - 50} height={width - 50} top={30}>
                     <QRCode 
-                      size={340} 
+                      size={width - 80} 
                       value={this.props.props.keys[`${this.props.props.args.name}address`]}
                       foregroundColor='black'
                       backgroundColor='#363636'
                     />
                   </Card>
-                </Animated.View>
+                  </ScrollView>
+                  </View>
                     ) : this.state.isSend ? (
-                        <View style={{alignItems: 'center'}}>
+                        <View style={{width: width, height: '100%'}}>
+                          <ScrollView style={{width: Dimensions.get('window').width}} contentContainerStyle={{alignItems: 'center'}}>
                             <Card style={{flexDirection: 'row'}} justifyCenter top={50} width={300} height={50}>
                               <TextInput placeholder='Address' placeholderTextColor="grey" style={styles.input} onChangeText={(address) => this.setState({address})} value={this.state.address}/>
                               <TouchableOpacity style={{position: 'absolute', right: 15}}>
@@ -221,22 +252,24 @@ export default class Wallet extends Component {
                                   <Text bold size={10}>MAX</Text>
                               </TouchableOpacity>
                             </Card>
-                            <Slider
-                              style={{width: 210, height: 40, marginTop: 20}}
-                              minimumValue={0.0000452}
-                              maximumValue={0.0004068}
-                              minimumTrackTintColor={this.getCoinInfo().color}
-                              maximumTrackTintColor="grey"
-                              onValueChange={(fee) => this.setState({fee: fee.toFixed(7)})}
-                              thumbTintColor='grey'
-                             />
-                            <Text color="grey">Fee: {this.state.fee}</Text>
+                            <View style={{flexDirection: 'row', marginTop: 25}}>
+                                <TouchableOpacity onPress={() => this.changeFee('economy')} style={[styles.feeButton, {borderTopLeftRadius: 15, borderBottomLeftRadius: 15}]}>
+                                    <Text size={12} color={this.state.feeButtons.left}>Economy</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => this.changeFee('standard')} style={[styles.feeButton]}>
+                                    <Text size={12} color={this.state.feeButtons.middle}>Standard</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => this.changeFee('fast')} style={[styles.feeButton, {borderTopRightRadius: 15, borderBottomRightRadius: 15}]}>
+                                    <Text size={12} color={this.state.feeButtons.right}>Fast</Text>
+                                </TouchableOpacity>
+                            </View>
+                            <Text top={20} color="grey">Fee: {this.state.fee}</Text>
                             <GradientButton onPress={this.sendTx} title="SEND" top={50} color={this.getCoinInfo().color}/>
-                        </View>
+                        </ScrollView>
+                      </View>
                     ) : null
                 }
             </KeyboardAvoidingView>
-            </ScrollView>
         </View>
     )
   }
@@ -309,7 +342,8 @@ const styles = StyleSheet.create({
     input: {
         height: 35,
         width: 200,
-        marginLeft: -80
+        marginLeft: -80,
+        color: 'white'
     },
     sendAll: {
         width:  70,
@@ -320,5 +354,12 @@ const styles = StyleSheet.create({
         right: 13,
         alignItems: 'center',
         justifyContent: 'center'
+    },
+    feeButton: {
+        width: width / 5,
+        height: 35,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#363636'
     }
 });

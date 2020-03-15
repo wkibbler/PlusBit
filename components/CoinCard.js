@@ -28,7 +28,7 @@ export default class CoinCard extends Component {
     } else if (coin == 'ZEL'){
       return require('../assets/ZEL.png')
     } else if (coin == 'SAFE'){
-      return require('../assets/SAFE.png')
+      return require('../assets/BCH.png')
     }
   }
 
@@ -51,11 +51,11 @@ export default class CoinCard extends Component {
         name: 'ZEL',
         balance: this.props.balance.ZEL
       }
-    } else if (coin == 'SAFE'){
+    } else if (coin == 'BCH'){
       return {
         gradient: ['rgb(77, 166, 197)', 'rgb(121, 204, 232)'],
-        name: 'SafeCoin',
-        balance: this.props.balance.SAFE
+        name: 'Bitcoin Cash',
+        balance: this.props.balance.ZEL // needs work
       }
     }
   }
@@ -69,10 +69,10 @@ export default class CoinCard extends Component {
               <Text size={20} bold>{this.getCoinData(this.props.coin).name}</Text>
               <Text size={13}>{this.getCoinData(this.props.coin).balance.balance + ' ' + this.props.coin} | {this.getCoinData(this.props.coin).balance.fiatBalance}</Text>
             </View>
-            <View style={{flexDirection: 'row', marginTop: 15, justifyContent: 'center'}}>
+            {<View style={{flexDirection: 'row', top: 15, justifyContent: 'center', position: 'absolute', right: 10}}>
               <Text bold size={10}>STATUS: </Text>
               <Image style={styles.statusDot} source={this.getCoinData(this.props.coin).balance.status == 2 ? require('../assets/status-2.png') : require('../assets/status-1.png')}/>
-            </View>
+    </View>}
         </LinearGradient>
       </Animated.View>
     );
@@ -91,19 +91,17 @@ const styles = StyleSheet.create({
   icon: {
     width: 60,
     height: 60,
-    marginTop: 25
+    marginTop: 25,
+    position: 'absolute',
+    left: 5
   },
   cardInfo: {
     width: 200,
     height: 80,
     marginTop: 15,
     justifyContent: 'center',
-    paddingLeft: 20
-  },
-  arrow: {
-    width: 60,
-    height: 30,
-    marginTop: 40
+    position: 'absolute',
+    left: 70
   },
   statusDot: {
     width: 10,

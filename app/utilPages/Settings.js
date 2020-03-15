@@ -67,7 +67,7 @@ export default class Settings extends Component {
     }
 
     copyPrivateKey = (sym) => {
-        Clipboard.setString(this.props.props.keys[`${sym}address`])
+        Clipboard.setString(this.props.props.keys[`${sym}privatekey`])
         Alert.alert('Copied to clipboard')
     }
 
@@ -102,7 +102,7 @@ export default class Settings extends Component {
   render() {
     return (
         <View style={styles.background}>
-          <ScrollView style={{width: width}} contentContainerStyle={{alignItems: 'center', height: height}}>
+          <ScrollView style={{width: width}} contentContainerStyle={{alignItems: 'center'}}>
             <Card height={90} top={60} width={width - 50}>
                 <TouchableOpacity onPress={this.deleteWallet} style={styles.deleteTouchable}>
                     <Text size={25} bold>Delete Wallet</Text>
@@ -126,8 +126,8 @@ export default class Settings extends Component {
                               <TouchableOpacity onPress={() => this.copyPrivateKey('ZEL')}>
                                   <Image style={styles.icon} source={require('../../assets/ZEL.png')}/>
                               </TouchableOpacity>
-                              <TouchableOpacity onPress={() => this.copyPrivateKey('SAFE')}>
-                                  <Image style={styles.icon} source={require('../../assets/SAFE.png')}/>
+                              <TouchableOpacity onPress={() => this.copyPrivateKey('BCH')}>
+                                  <Image style={styles.icon} source={require('../../assets/BCH.png')}/>
                               </TouchableOpacity>
                           </View>
                         </View>
@@ -138,38 +138,38 @@ export default class Settings extends Component {
                   <Text top={15} size={20} bold>Change fiat currency</Text>
                   <Text size={12} color='grey' top={10}>Current: {this.props.props.user.fiatUnit}</Text>
                   <View><Picker top={15} onChange={(res) => this.props.props.updateFiatUnit(res)} items={[
-                      {label: 'USD', value: 'USD'},
-                      {label: 'GBP', value: 'GBP'},
-                      {label: 'EUR', value: 'EUR'},
-                      {label: 'JPY', value: 'JPY'},
-                      {label: 'TRY', value: 'TRY'},
-                      {label: 'CHF', value: 'CHF'},
-                      {label: 'CAD', value: 'CAD'},
                       {label: 'AUD', value: 'AUD'},
-                      {label: 'NZD', value: 'NZD'},
-                      {label: 'CNY', value: 'CNY'},
-                      {label: 'ZAR', value: 'ZAR'},
-                      {label: 'THB', value: 'THB'},
-                      {label: 'PHP', value: 'PHP'},
-                      {label: 'KRW', value: 'KRW'},
-                      {label: 'VND', value: 'VND'},
-                      {label: 'MYR', value: 'MYR'},
-                      {label: 'RUB', value: 'RUB'},
-                      {label: 'IRN', value: 'IRN'},
-                      {label: 'SGD', value: 'SGD'},
-                      {label: 'HKD', value: 'HKD'},
                       {label: 'ARS', value: 'ARS'},
                       {label: 'BRL', value: 'BRL'},
+                      {label: 'CHF', value: 'CHF'},
+                      {label: 'CAD', value: 'CAD'},
+                      {label: 'CNY', value: 'CNY'},
                       {label: 'DKK', value: 'DKK'},
+                      {label: 'EUR', value: 'EUR'},
+                      {label: 'GBP', value: 'GBP'},
+                      {label: 'HKD', value: 'HKD'},
+                      {label: 'IRN', value: 'IRN'},
                       {label: 'IDR', value: 'IDR'},
+                      {label: 'JPY', value: 'JPY'},
+                      {label: 'KRW', value: 'KRW'},
                       {label: 'KWD', value: 'KWD'},
                       {label: 'MXN', value: 'MXN'},
+                      {label: 'MYR', value: 'MYR'},
                       {label: 'NOK', value: 'NOK'},
+                      {label: 'NZD', value: 'NZD'},
+                      {label: 'PHP', value: 'PHP'},
                       {label: 'PLN', value: 'PLN'},
                       {label: 'PKR', value: 'PKR'},
+                      {label: 'RUB', value: 'RUB'},
+                      {label: 'SGD', value: 'SGD'},
                       {label: 'SAR', value: 'SAR'},
                       {label: 'SEK', value: 'SEK'},
-                      {label: 'UAH', value: 'UAH'}
+                      {label: 'TRY', value: 'TRY'},
+                      {label: 'THB', value: 'THB'},
+                      {label: 'USD', value: 'USD'},
+                      {label: 'UAH', value: 'UAH'},
+                      {label: 'VND', value: 'VND'},
+                      {label: 'ZAR', value: 'ZAR'},
                   ]} /></View>
                 </Card>
                 <Card justifyCenter width={width - 50} height={70} top={30}>
@@ -181,6 +181,12 @@ export default class Settings extends Component {
                     labelStyle={{ color: "white", fontFamily: 'Poppins-Regular', fontWeight: 'bold', fontSize: 15 }}
                     onToggle={isOn => this.toggleBiometrics(isOn)}
                   />
+                </Card>
+                <Card justifyCenter top={30} width={width - 50} height={60}>
+                  <View style={{alignItems: 'center'}}>
+                  <Text size={12}>By using PlusBit you agree to our </Text>
+                  <TouchableOpacity onPress={() => Linking.openURL('https://plusbit.tech')}><Text color='#00cbb3' size={12}>Privacy Policy </Text></TouchableOpacity>
+                  </View>
                 </Card>
                 <Card top={30} width={width - 50} height={80}>
                   <View style={{flexDirection: 'row', marginTop: 12}}>
@@ -201,7 +207,6 @@ export default class Settings extends Component {
 
 const styles = StyleSheet.create({
     background: {
-        backgroundColor: '#222222',
         height: Dimensions.get('window').height,
         width: width,
         alignItems: 'center',
@@ -215,12 +220,11 @@ const styles = StyleSheet.create({
     icon: {
         height: 60,
         width: 60,
-        marginLeft: 22
     },
     iconWrapper: {
         width: width - 60,
         flexDirection: 'row',
         alignItems: 'center',
-        marginTop: 10
+        marginTop: 10,
     }
 });
