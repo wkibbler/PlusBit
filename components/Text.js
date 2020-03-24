@@ -15,7 +15,8 @@ export default class Font extends Component {
             fontFamily: 'Poppins-Regular',
             textAlign: this.props.center ? 'center' : null,
             padding: this.props.padding || 0,
-            marginTop: this.props.top || 0
+            marginTop: this.props.top || 0,
+            marginBottom: this.props.bottom || 0
         }]}>
             {this.props.children}
         </Text>

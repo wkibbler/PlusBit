@@ -8,18 +8,19 @@ import LineGradient from '../../components/LineGradient'
 import QRCode from 'react-native-qr-generator'
 import DeviceInfo from 'react-native-device-info'
 import txs from './exampleTxs'
-import Slider from '@react-native-community/slider';
 import GradientButton from '../../components/GradentButton'
 import transaction from '../../components/Transactions'
 import Spinner from 'react-native-loading-spinner-overlay'
+import QRCodeScanner from 'react-native-qrcode-scanner';
+import Modal from 'react-native-modal'
 
 const width = Dimensions.get('window').width
 const height = Dimensions.get('window').height
 
 export default class Wallet extends Component {
 
-    constructor(){
-        super()
+    constructor(props){
+        super(props)
         this.state = {
             isActivity: true,
             isReceive: false,
@@ -32,7 +33,11 @@ export default class Wallet extends Component {
                 left: 'white',
                 middle: 'grey',
                 right: 'grey'
-            }
+            },
+            qrModal: false,
+            errorIndex: '',
+            sucessModal: false,
+            heightList: props.props.balanceData
         }
     }
 
@@ -79,7 +84,7 @@ export default class Wallet extends Component {
         } else if (this.props.props.args.name == 'ILC'){
             return {
                 clipboard: require('../../assets/ILC-clipboard.png'),
-                color: 'rgb(19, 64, 115)',
+                color: 'rgb(22, 112, 134)',
                 qr: require('../../assets/ILC-qr.png'),
                 paste: require('../../assets/ILC-paste.png'),
                 balance: this.props.props.balanceData.ILC.balance
@@ -92,13 +97,13 @@ export default class Wallet extends Component {
                 paste: require('../../assets/ZEL-paste.png'),
                 balance: this.props.props.balanceData.ZEL.balance
             }
-        } else if (this.props.props.args.name == 'SAFE'){
+        } else if (this.props.props.args.name == 'DASH'){
             return {
-                clipboard: require('../../assets/SAFE-clipboard.png'),
-                color: 'rgb(63, 149, 184)',
-                qr: require('../../assets/SAFE-qr.png'),
-                paste: require('../../assets/SAFE-paste.png'),
-                balance: this.props.props.balanceData.SAFE.balance
+                clipboard: require('../../assets/DASH-clipboard.png'),
+                color: 'rgb(14, 119, 221)',
+                qr: require('../../assets/DASH-qr.png'),
+                paste: require('../../assets/DASH-paste.png'),
+                balance: this.props.props.balanceData.DASH.balance
             }
         }
     }
@@ -111,17 +116,23 @@ export default class Wallet extends Component {
     sendTx = async () => {
         let self = this
         this.setState({spinner: true})
-        transaction(this.state.address, 
+        transaction(
+            this.state.address, 
             Number(this.state.amount), 
             Number(this.state.fee), 
             this.props.props.keys[`${this.props.props.args.name}address`], 
             this.props.props.keys[`${this.props.props.args.name}privatekey`],
             this.props.props.balanceData,
-            this.props.props.args.name, 
+            this.props.props.args.name,
+            function(error){
+                self.setState({errorIndex: error})
+            },
             function(result){
             self.setState({spinner: false})
             if (result == 'sent'){
                 self.SwitchToActivity()
+                self.setState({sucessModal: true, address: '', amount: 0})
+                self.changeFee('economy')
             }
         }).catch(function (error) {
             self.setState({spinner: false})
@@ -133,8 +144,23 @@ export default class Wallet extends Component {
     }
 
     disMount = () => {
-        this.setState({address: '', amount: 0})
+        this.setState({address: '', amount: ''})
         this.changeFee('economy')
+    }
+
+    onQrCodeScan = (e) => {
+        this.setState({address: e.data, qrModal: false})
+      }
+
+    expand(i){
+        let hl = this.state.heightList
+        if (hl[this.props.props.args.name].heightList[i] == 65) {
+           hl[this.props.props.args.name].heightList[i] = 150
+           this.setState({heightList: hl})
+        } else {
+            hl[this.props.props.args.name].heightList[i] = 65
+            this.setState({heightList: hl})
+        }
     }
 
   render() {
@@ -179,9 +205,10 @@ export default class Wallet extends Component {
                     </TouchableOpacity>                
                 </Row>
             </WalletHeader>
+            <ScrollView style={{width: Dimensions.get('window').width}} contentContainerStyle={{alignItems: 'center'}}>
                 {
                     this.state.isActivity ? (
-                  <View>
+                  <View style={{width: width, alignItems: 'center'}}>
                       {
                           this.props.props.balanceData[this.props.props.args.name].transactions.length == 0 ? (
                               <View style={{textAlign: 'center', padding: 20}}>
@@ -189,11 +216,10 @@ export default class Wallet extends Component {
                                 <Text center color="grey">Go to the RECEIVE page to get your wallet address</Text>
                               </View>
                           ) : (
-                            <View style={{width: width, height: '100%'}}>
-                                <ScrollView style={{width: Dimensions.get('window').width, marginBottom: 10}} contentContainerStyle={{alignItems: 'center'}}>
+                            <View style={{width, alignItems: 'center'}}>
                                 {
                                     this.props.props.balanceData[this.props.props.args.name].transactions.map((item, index) => (
-                                      <TouchableOpacity style={[styles.transaction, {borderTopWidth: index == 0 ? 1 : 0.5, borderBottomWidth: index == txs.length - 1 ? 1 : 0.5}]}>
+                                      <TouchableOpacity onPress={() => this.expand(index)} style={[styles.transaction, {borderTopWidth: index == 0 ? 1 : 0.5, borderBottomWidth: index == txs.length - 1 ? 1 : 0.5, height: this.state.heightList[this.props.props.args.name].heightList[index]}]}>
                                         <View style={styles.txIconCard}>
                                           <Image style={styles.txIcon} source={item.direction == 'SENT' ? require('../../assets/sent.png') : require('../../assets/receive.png')}/>
                                         </View>
@@ -205,21 +231,39 @@ export default class Wallet extends Component {
                                           <Text size={20}>{item.value.toFixed(4)}</Text>
                                           <Text size={10}>{this.props.props.args.name}</Text>
                                         </View>
+                                        {
+                                            this.state.heightList[this.props.props.args.name].heightList[index] == 65 ? null : (
+                                                <View style={{marginTop: 20, width, alignItems: 'center'}}>
+                                                  <TouchableOpacity onPress={() => {
+                                                      Clipboard.setString(item.txid)
+                                                      Alert.alert('Copied to clipboard')
+                                                  }} style={{flexDirection: 'row'}}>
+                                                      <Text size={width / 27} bold>Txid: </Text>
+                                                      <Text size={width / 27}>{item.txid.slice(0, (item.to_from.length - 3))}...</Text>
+                                                  </TouchableOpacity>
+                                                  <TouchableOpacity onPress={() => {
+                                                      Clipboard.setString(item.to_from)
+                                                      Alert.alert('Copied to clipboard')
+                                                  }} style={{flexDirection: 'row', marginTop: 7}}>
+                                                    <Text size={width / 27} bold>{item.direction == 'SENT' ? 'To' : 'From'}: </Text>
+                                                    <Text size={width / 27}>{item.to_from}</Text>
+                                                  </TouchableOpacity>
+                                                </View>
+                                            )
+                                        }
                                       </TouchableOpacity>
                                     ))
                                    }
-                                </ScrollView>
                               </View>
                           )
                       }
                   </View>
                     ) : this.state.isReceive ? (
-              <View style={{width: width, height: '100%'}}>
-                <ScrollView style={{width: Dimensions.get('window').width}} contentContainerStyle={{alignItems: 'center'}}>
+              <View style={{width, alignItems: 'center'}}>
                   <TouchableOpacity onPress={this.copyAddress}>
                     <Card justifyCenter width={width - 50} height={50} top={30}>
                       <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-                        <Text size={10} center color="grey">{this.props.props.keys[`${this.props.props.args.name}address`]}</Text>
+                        <Text size={width / 30} center color="grey">{this.props.props.keys[`${this.props.props.args.name}address`]}</Text>
                         <Image style={styles.copyIcon} source={this.getCoinInfo().clipboard}/>
                       </View>
                     </Card>
@@ -232,14 +276,12 @@ export default class Wallet extends Component {
                       backgroundColor='#363636'
                     />
                   </Card>
-                  </ScrollView>
                   </View>
                     ) : this.state.isSend ? (
-                        <View style={{width: width, height: '100%'}}>
-                          <ScrollView style={{width: Dimensions.get('window').width}} contentContainerStyle={{alignItems: 'center'}}>
+                        <View style={{width, alignItems: 'center'}}>
                             <Card style={{flexDirection: 'row'}} justifyCenter top={50} width={300} height={50}>
                               <TextInput placeholder='Address' placeholderTextColor="grey" style={styles.input} onChangeText={(address) => this.setState({address})} value={this.state.address}/>
-                              <TouchableOpacity style={{position: 'absolute', right: 15}}>
+                              <TouchableOpacity onPress={() => this.setState({qrModal: true})} style={{position: 'absolute', right: 15}}>
                                 <Image style={styles.qr} source={this.getCoinInfo().qr}/>
                               </TouchableOpacity>
                               <TouchableOpacity onPress={async () => this.setState({address: await Clipboard.getString()})} style={{position: 'absolute', right: 50}}>
@@ -247,7 +289,7 @@ export default class Wallet extends Component {
                               </TouchableOpacity>
                             </Card>
                             <Card style={{flexDirection: 'row'}} justifyCenter top={30} width={300} height={50}>
-                              <TextInput keyboardType='numeric' placeholder='Amount' placeholderTextColor="grey" style={styles.input} onChangeText={(amount) => this.setState({amount})} value={this.state.amount}/>
+                              <TextInput keyboardType='numeric' placeholder='Amount' placeholderTextColor="grey" style={styles.input} onChangeText={(amount) => this.setState({amount: amount.replace(/,/, '.')})} value={this.state.amount}/>
                               <TouchableOpacity onPress={this.max} style={[{borderColor: this.getCoinInfo().color}, styles.sendAll]}>
                                   <Text bold size={10}>MAX</Text>
                               </TouchableOpacity>
@@ -264,12 +306,28 @@ export default class Wallet extends Component {
                                 </TouchableOpacity>
                             </View>
                             <Text top={20} color="grey">Fee: {this.state.fee}</Text>
-                            <GradientButton onPress={this.sendTx} title="SEND" top={50} color={this.getCoinInfo().color}/>
-                        </ScrollView>
+                    <GradientButton onPress={this.sendTx} title="SEND" top={30} color={this.getCoinInfo().color}/>
+                    {/*<TextInput multiline style={{borderColor: 'white', borderWidth: 2, width: 200, height: 200, color: 'white'}} value={this.state.errorIndex}/>*/}
+                        <Modal style={styles.modal} isVisible={this.state.qrModal} onBackdropPress={() => this.setState({qrModal: false})}>
+                            <Card width={1} height={1}>
+                              <View style={{width: '100%', height: '100%', alignItems: 'center'}}>
+                                <QRCodeScanner
+                                   cameraStyle={{height: height / 1.7}}
+                                   onRead={this.onQrCodeScan}/>
+                              </View>
+                            </Card>
+                        </Modal>
                       </View>
                     ) : null
                 }
+              </ScrollView>
             </KeyboardAvoidingView>
+            <Modal animationIn='fadeIn' animationOut='fadeOut' isVisible={this.state.sucessModal} style={styles.successModal} onBackdropPress={() => this.setState({sucessModal: false})}>
+                <Card height={180} width={150} justifyCenter>
+                    <Image style={{width: 80, height: 80}} source={require('../../assets/success.png')}/>
+                    <Text bold top={20}>SUCCESS</Text>
+                </Card>
+            </Modal>
         </View>
     )
   }
@@ -304,23 +362,22 @@ const styles = StyleSheet.create({
     },
     transaction: {
         width: Dimensions.get('window').width - 10,
-        height: 65,
         borderColor: 'grey',
         borderBottomWidth: 0.5,
         borderTopWidth: 0.5,
-        justifyContent: 'center'
     },
     txIcon: {
         width: 35,
         height: 35
       },
     time: {
-        marginLeft: 100
+        marginLeft: 100,
+        marginTop: 10
       },
       txAmountWrapper: {
         position: 'absolute',
         right: 20,
-        marginTop: 15,
+        marginTop: 10,
         alignItems: 'flex-end',
       },
       txIconCard: {
@@ -356,10 +413,19 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     feeButton: {
-        width: width / 5,
+        width: width / 4.5,
         height: 35,
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#363636'
-    }
+    },
+    modal: {
+        flex: 1,
+        alignItems: 'center',
+      },
+      successModal: {
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center'
+      }
 });

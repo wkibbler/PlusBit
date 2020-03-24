@@ -25,7 +25,9 @@ export default class App extends Component {
             registerPassword: '',
             confirmPassword: '',
             user: {},
-            scrollSubheight: 0
+            scrollSubheight: 0,
+            showPsw: true,
+            showCpsw: true
         }
     }
 
@@ -131,10 +133,16 @@ export default class App extends Component {
                         <TextInput onTouchStart={() => this.setState({scrollSubheight: 100})} onEndEditing={() => this.setState({scrollSubheight: 0})} placeholder='Username' placeholderTextColor="grey" style={styles.input} onChangeText={(registerUsername) => this.setState({registerUsername})} value={this.state.registerUsername}/>
                     </Card>
                     <Card justifyCenter width={width / 1.2} height={50} top={30} radius={100}>
-                        <TextInput onTouchStart={() => this.setState({scrollSubheight: 100})} onEndEditing={() => this.setState({scrollSubheight: 0})} secureTextEntry placeholder='Password' placeholderTextColor="grey" style={styles.input} onChangeText={(registerPassword) => this.setState({registerPassword})} value={this.state.registerPassword}/>
+                        <TextInput onTouchStart={() => this.setState({scrollSubheight: 100})} onEndEditing={() => this.setState({scrollSubheight: 0})} secureTextEntry={this.state.showPsw} placeholder='Password' placeholderTextColor="grey" style={[styles.input, {width: width - 180}]} onChangeText={(registerPassword) => this.setState({registerPassword})} value={this.state.registerPassword}/>
+                        <TouchableOpacity onPress={() => this.setState({showPsw: !this.state.showPsw})} style={{position: 'absolute', right: 15}}>
+                          <Image style={{width: 30, height: 20}} source={require('../assets/eye.png')}/>
+                        </TouchableOpacity>
                     </Card>
                     <Card justifyCenter width={width / 1.2} height={50} top={30} radius={100}>
-                        <TextInput onTouchStart={() => this.setState({scrollSubheight: 100})} onEndEditing={() => this.setState({scrollSubheight: 0})} secureTextEntry placeholder='Confirm Password' placeholderTextColor="grey" style={styles.input} onChangeText={(confirmPassword) => this.setState({confirmPassword})} value={this.state.confirmPassword}/>
+                        <TextInput onTouchStart={() => this.setState({scrollSubheight: 100})} onEndEditing={() => this.setState({scrollSubheight: 0})} secureTextEntry={this.state.showCpsw} placeholder='Confirm Password' placeholderTextColor="grey" style={[styles.input, {width: width - 180}]} onChangeText={(confirmPassword) => this.setState({confirmPassword})} value={this.state.confirmPassword}/>
+                        <TouchableOpacity onPress={() => this.setState({showCpsw: !this.state.showCpsw})} style={{position: 'absolute', right: 15}}>
+                          <Image style={{width: 30, height: 20}} source={require('../assets/eye.png')}/>
+                        </TouchableOpacity>
                     </Card>
                     <GradientButton onPress={this.register} top={70} width={width / 1.2} title='REGISTER'/>
                     <Text top={-20} center padding={50} color="grey">Accounts are registed locally. No account details will ever leave this device.</Text>
@@ -164,6 +172,6 @@ const styles = StyleSheet.create({
       width: Dimensions.get('window').width - 140,
       color: 'white',
       fontFamily: 'Poppins-Regular',
-      textAlign: 'center'
+      textAlign: 'center',
     },
 });

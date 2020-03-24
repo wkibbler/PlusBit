@@ -101,9 +101,9 @@ export default class Dashboard extends Component {
                   <Image style={styles.addIcon} source={require('../assets/ZEL.png')}/>
                   <Text>ZEL</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => this.addAsset('BCH')} disabled={this.props.user.activeCoins.indexOf('SAFE') == -1 ? false : true} style={[{alignItems: 'center'}, this.props.user.activeCoins.indexOf('SAFE') == -1 ? null : {opacity: 0.5}]}>
-                  <Image style={styles.addIcon} source={require('../assets/BCH.png')}/>
-                  <Text>Bitcoin Cash</Text>
+                <TouchableOpacity onPress={() => this.addAsset('DASH')} disabled={this.props.user.activeCoins.indexOf('DASH') == -1 ? false : true} style={[{alignItems: 'center'}, this.props.user.activeCoins.indexOf('DASH') == -1 ? null : {opacity: 0.5}]}>
+                  <Image style={styles.addIcon} source={require('../assets/DASH.png')}/>
+                  <Text>Dash</Text>
                 </TouchableOpacity>
               </View>
             </Card>
@@ -127,9 +127,9 @@ export default class Dashboard extends Component {
                   <Image style={styles.addIcon} source={require('../assets/ZEL.png')}/>
                   <Text>ZEL</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => this.removeAsset('BCH')} disabled={this.props.user.activeCoins.indexOf('SAFE') == -1 ? true : false} style={[{alignItems: 'center'}, this.props.user.activeCoins.indexOf('SAFE') == -1 ? {opacity: 0.5} : null]}>
-                  <Image style={styles.addIcon} source={require('../assets/BCH.png')}/>
-                  <Text>Bitcoin Cash</Text>
+                <TouchableOpacity onPress={() => this.removeAsset('DASH')} disabled={this.props.user.activeCoins.indexOf('DASH') == -1 ? true : false} style={[{alignItems: 'center'}, this.props.user.activeCoins.indexOf('DASH') == -1 ? {opacity: 0.5} : null]}>
+                  <Image style={styles.addIcon} source={require('../assets/DASH.png')}/>
+                  <Text>Dash</Text>
                 </TouchableOpacity>
               </View>
             </Card>

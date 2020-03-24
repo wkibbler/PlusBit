@@ -22,35 +22,35 @@ function getCoinData(sym, bls){
             explorer: 'https://explorer.zel.cash',
             network: lib.networks.zcash
         }
-    } else if (sym == 'SAFE'){
+    } else if (sym == 'DASH'){
       return {
-          balance: Number(bls.SAFE.balance),
-          explorer: 'https://explorer.safecoin.org',
-          network: lib.networks.SAFE
+          balance: Number(bls.DASH.balance),
+          explorer: 'https://insight.dash.org',
+          network: lib.networks.dash
       }
   }
 }
 
-export default function(to, amount, fee, from, priv, bls, coin, cb){
-    if (to == '' || amount <= fee) { setTimeout(function(){ Alert.alert('Enter an address and amount greater than transaction fee'); }, 200); cb() } else {
+export default function(to, amount, fee, from, priv, bls, coin, stageFunction, cb){
+  console.log(`amount: ${amount + fee} fee: ${fee}`)
+    if (to == '' || amount <= fee) { setTimeout(function(){ Alert.alert('Error', 'Enter an address and amount greater than transaction fee'); }, 200); cb() } else {
       var coinData = getCoinData(coin, bls)
-        if (coinData.balance <= amount + fee) { setTimeout(function(){ Alert.alert('Not enough funds'); }, 200); cb() } else {
+        if (coinData.balance <= (amount + fee)) { setTimeout(function(){ Alert.alert('Not enough funds'); }, 200); cb() } else {
             let totalSats = (amount * 100000000) + (fee * 100000000)
             let round = Math.ceil(totalSats)
-            return fetch(`${coinData.explorer}/api/addr/${from}/utxo`).then((response) => response.json()).then((responseJson) => {
 
+            return fetch(`${coinData.explorer}/api/addr/${from}/utxo`).then((response) => response.json()).then((responseJson) => {
               //creating trasaction after receiving utxo data
               var targets = [{ address: 'moKyssgHDXPfgW7AmUgQADrhtYnJLWuTGu', satoshis: round }]
               var feeRate = 0;
               let { inputs, outputs, fee } = coinSelect(responseJson, targets, feeRate);
               var builder = new lib.TransactionBuilder(coinData.network);
               //zcash sapling support
-              if (coin == "ZEL" || coin == 'SAFE'){
+              if (coin == "ZEL"){
                 builder.setVersion(lib.Transaction.ZCASH_SAPLING_VERSION);
                 builder.setVersionGroupId(parseInt('0x892F2085', 16));
-                console.log('test')
                 axios.get(`${coinData.explorer}/api/status`).then(function (status) {
-                  builder.setExpiryHeight(status.info.blocks + 100);
+                  builder.setExpiryHeight(status.data.info.blocks + 100);
                 }).catch(function (error) {
                   console.log(error);
                 })
@@ -65,22 +65,19 @@ export default function(to, amount, fee, from, priv, bls, coin, cb){
               var changeAm = sum - round;
               inputs.forEach(input => builder.addInput(input.txid, input.vout));
               //adding outputs
-              builder.addOutput(to, Math.ceil(amount * 100000000));
+              builder.addOutput(to.replace(/\s+/g, ''), Math.ceil(amount * 100000000));
               builder.addOutput(from, changeAm);
               //Siging transaction
-              if (coin == "ZEL" || coin == 'SAFE'){
+              if (coin == "ZEL"){
                 inputs.forEach((v,i) => {builder.sign(i, key, '', lib.Transaction.SIGHASH_SINGLE, sum)})
               } else {
-                inputs.forEach((v,i) => {builder.sign(i, key)})
+                  inputs.forEach((v, i) => {builder.sign(i, key)})
               }
               var txhex = builder.build().toHex();
               //broadcast transaction
               axios.post(`${coinData.explorer}/api/tx/send`, {rawtx: txhex})
               .then(function (response) {
                 cb('sent')
-                setTimeout(function(){
-                    Alert.alert('Success')
-                }, 200)
               })
               .catch(function (error) {
                 console.log(error)
@@ -93,7 +90,7 @@ export default function(to, amount, fee, from, priv, bls, coin, cb){
               //this.setState({spinner: false, status: false})
               cb()
               setTimeout(() => {
-               Alert.alert('Connection error')
+               Alert.alert('Error', 'Error building and broadcasting transaction')
              }, 200);
             })
         }

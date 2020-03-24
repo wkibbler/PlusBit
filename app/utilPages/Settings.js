@@ -6,6 +6,7 @@ import RNSecureKeyStore, {ACCESSIBLE} from "react-native-secure-key-store";
 import Picker from '../../components/Picker'
 import ToggleSwitch from 'toggle-switch-react-native'
 import FingerprintScanner from 'react-native-fingerprint-scanner';
+import AboutMessage from './AboutMessage'
 
 const width = Dimensions.get('window').width
 const height = Dimensions.get('window').height
@@ -102,8 +103,20 @@ export default class Settings extends Component {
   render() {
     return (
         <View style={styles.background}>
-          <ScrollView style={{width: width}} contentContainerStyle={{alignItems: 'center'}}>
-            <Card height={90} top={60} width={width - 50}>
+          <ScrollView style={{width: width, height: height - 30}} contentContainerStyle={{alignItems: 'center'}} showsVerticalScrollIndicator={false}>
+            <View style={{width: width - 50, marginTop: 60}}>
+                <Card justifyCenter height={40}>
+                  <TouchableOpacity onPress={() => this.props.props.utilToDashboard()}>
+                    <Text bold>{'<  BACK'}</Text>
+                  </TouchableOpacity>
+                </Card>
+                <Card style={{position: 'absolute', right: 0}} justifyCenter height={40}>
+                  <TouchableOpacity onPress={() => this.props.props.utilToLogin()}>
+                    <Text bold>{'LOGOUT >'}</Text>
+                  </TouchableOpacity>
+                </Card>
+            </View>
+            <Card height={90} top={30} width={width - 50}>
                 <TouchableOpacity onPress={this.deleteWallet} style={styles.deleteTouchable}>
                     <Text size={25} bold>Delete Wallet</Text>
                 </TouchableOpacity>
@@ -126,8 +139,8 @@ export default class Settings extends Component {
                               <TouchableOpacity onPress={() => this.copyPrivateKey('ZEL')}>
                                   <Image style={styles.icon} source={require('../../assets/ZEL.png')}/>
                               </TouchableOpacity>
-                              <TouchableOpacity onPress={() => this.copyPrivateKey('BCH')}>
-                                  <Image style={styles.icon} source={require('../../assets/BCH.png')}/>
+                              <TouchableOpacity onPress={() => this.copyPrivateKey('DASH')}>
+                                  <Image style={styles.icon} source={require('../../assets/DASH.png')}/>
                               </TouchableOpacity>
                           </View>
                         </View>
@@ -182,13 +195,37 @@ export default class Settings extends Component {
                     onToggle={isOn => this.toggleBiometrics(isOn)}
                   />
                 </Card>
+                <Card top={30} width={width - 50} height={300}>
+                  <Text top={20} bold>About PlusBit</Text>
+                  <ScrollView style={{padding: 20, paddingTop: 0, marginTop: 5}}>
+                    <Text center>{AboutMessage}</Text>
+                  </ScrollView>
+                  <View style={{flexDirection: 'row', height: 80, alignItems: 'center'}}>
+                  <TouchableOpacity onPress={() => Linking.openURL('https://plusbit.tech')} style={{marginLeft: 10, marginRight: 10}}>
+                      <Image style={styles.socialIcon} source={require('../../assets/website.png')}/>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => Linking.openURL('https://twitter.com/PlusBitPos')} style={{marginLeft: 10, marginRight: 10}}>
+                      <Image style={styles.socialIcon} source={require('../../assets/twitter.png')}/>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => Linking.openURL('https://discord.gg/9dXnmCz')} style={{marginLeft: 10, marginRight: 10}}>
+                      <Image style={styles.socialIcon} source={require('../../assets/discord.png')}/>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => Linking.openURL('https://t.me/PlusBitPos')} style={{marginLeft: 10, marginRight: 10}}>
+                      <Image style={styles.socialIcon} source={require('../../assets/telegram.png')}/>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => Linking.openURL('https://www.instagram.com/plusbitofficial')} style={{marginLeft: 10, marginRight: 10}}>
+                      <Image style={styles.socialIcon} source={require('../../assets/instagram.png')}/>
+                    </TouchableOpacity>
+                  </View>
+                  <Text style={{position: 'absolute', bottom: 5}} size={10} color="grey">v0.0.1</Text>
+                </Card>
                 <Card justifyCenter top={30} width={width - 50} height={60}>
                   <View style={{alignItems: 'center'}}>
                   <Text size={12}>By using PlusBit you agree to our </Text>
-                  <TouchableOpacity onPress={() => Linking.openURL('https://plusbit.tech')}><Text color='#00cbb3' size={12}>Privacy Policy </Text></TouchableOpacity>
+                  <TouchableOpacity onPress={() => Linking.openURL('https://github.com/PlusBitPos/PrivacyPolicy')}><Text color='#00cbb3' size={12}>Privacy Policy </Text></TouchableOpacity>
                   </View>
                 </Card>
-                <Card top={30} width={width - 50} height={80}>
+                <Card bottom={30} top={30} width={width - 50} height={80}>
                   <View style={{flexDirection: 'row', marginTop: 12}}>
                   <Text size={12}>From </Text>
                   <TouchableOpacity onPress={() => Linking.openURL('https://plusbit.tech')}><Text color='#00cbb3' size={12}>PlusBit </Text></TouchableOpacity>
@@ -226,5 +263,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         marginTop: 10,
+    },
+    socialIcon: {
+      width: 30,
+      height: 30
     }
 });

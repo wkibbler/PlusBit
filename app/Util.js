@@ -25,7 +25,7 @@ export default class Util extends Component {
 
   render() {
     return (
-        <GestureRecognizer config={{velocityThreshold: 0.0000001, directionalOffsetThreshold: 80}} onSwipeRight={() => {
+        <GestureRecognizer config={{velocityThreshold: 1, directionalOffsetThreshold: 80}} onSwipeRight={() => {
           this.props.utilToDashboard()
           if (this.props.page == 'wallet'){
             this.refs.wallet.disMount()

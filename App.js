@@ -38,7 +38,7 @@ export default class App extends Component {
       secondaryUtilArg: '',
       keys: {},
       spinner: false,
-      balanceData: {totalBalance: 0.0000,BTC:{balance: 0.0000,fiatBalance: 0.00,transactions:[], status:2},ILC:{balance:0.0000,fiatBalance:0.00,transactions:[],status:2},ZEL:{balance:0.0000,fiatBalance:0.00,transactions:[],status:2},SAFE:{balance:0.0000,fiatBalance:0.00,transactions:[],status:2}},
+      balanceData: {totalBalance: 0.0000,BTC:{balance: 0.0000,fiatBalance: 0.00,transactions:[], status:2},ILC:{balance:0.0000,fiatBalance:0.00,transactions:[],status:2},ZEL:{balance:0.0000,fiatBalance:0.00,transactions:[],status:2},ZEC:{balance:0.0000,fiatBalance:0.00,transactions:[],status:2}},
       status: true
     }
   }
@@ -138,7 +138,7 @@ export default class App extends Component {
       setInterval(() => {
         this.updateRemoteData()
       }, 30000)
-      return fetch(`https://plusbit-api.libtechnologies.io/plusbit/${json.fiatUnit}/${keys.BTCaddress}/${keys.ILCaddress}/${keys.ZELaddress}/${keys.SAFEaddress}`)
+      return fetch(`https://plusbit-api.libtechnologies.io/plusbit/${json.fiatUnit}/${keys.BTCaddress}/${keys.ILCaddress}/${keys.ZELaddress}/${keys.DASHaddress}`)
       .then((response) => response.json())
       .then((responseJson) => {
         this.setState({balanceData: responseJson, spinner: false, status: true})
@@ -154,7 +154,7 @@ export default class App extends Component {
   } 
 
   updateRemoteData(){
-    return fetch(`https://plusbit-api.libtechnologies.io/plusbit/${this.state.user.fiatUnit}/${this.state.keys.BTCaddress}/${this.state.keys.ILCaddress}/${this.state.keys.ZELaddress}/${this.state.keys.SAFEaddress}`)
+    return fetch(`https://plusbit-api.libtechnologies.io/plusbit/${this.state.user.fiatUnit}/${this.state.keys.BTCaddress}/${this.state.keys.ILCaddress}/${this.state.keys.ZELaddress}/${this.state.keys.DASHaddress}`)
       .then((response) => response.json())
       .then((responseJson) => {
         console.log('Updating wallet data')

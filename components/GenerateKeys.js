@@ -7,9 +7,8 @@ export default function(hash){
     var l = bigi.fromBuffer(hash + 'libbyib')
     var BitcoinKeyPair = new lib.ECPair(d, null, {network: lib.networks.bitcoin});
     var LICcoinKeyPair = new lib.ECPair(l, null, {network: lib.networks.bitcoin})
-    var ZcashKeyPair = new lib.ECPair(d, null, {network: lib.networks.zcash})
-    var BCashKeyPair = new lib.ECPair(d, null, {network: lib.networks.bitcoincash})
-    console.log(BCashKeyPair.getAddress())
+    var ZcashKeyPair = new lib.ECPair(d, null, {network: lib.networks.zcash}) // used for zelcash
+    var DashKeyPair = new lib.ECPair(d, null, {network: lib.networks.dash})
     return {
         BTCaddress: BitcoinKeyPair.getAddress(),
         BTCprivatekey: BitcoinKeyPair.toWIF(),
@@ -17,7 +16,7 @@ export default function(hash){
         ILCprivatekey: LICcoinKeyPair.toWIF(),
         ZELaddress: ZcashKeyPair.getAddress(),
         ZELprivatekey: ZcashKeyPair.toWIF(),
-        BCHaddress: BCashKeyPair.getAddress(),
-        BCHprivatekey: BCashKeyPair.toWIF()
+        DASHaddress: DashKeyPair.getAddress(),
+        DASHprivatekey: DashKeyPair.toWIF()
     }
 }
