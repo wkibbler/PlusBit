@@ -38,7 +38,7 @@ export default class App extends Component {
       secondaryUtilArg: '',
       keys: {},
       spinner: false,
-      balanceData: {totalBalance: 0.0000,BTC:{balance: 0.0000,fiatBalance: 0.00,transactions:[], status:2},ILC:{balance:0.0000,fiatBalance:0.00,transactions:[],status:2},ZEL:{balance:0.0000,fiatBalance:0.00,transactions:[],status:2},ZEC:{balance:0.0000,fiatBalance:0.00,transactions:[],status:2}},
+      balanceData: {totalBalance: 0.0000,BTC:{balance: 0.0000,fiatBalance: 0.00,transactions:[], status:2},ILC:{balance:0.0000,fiatBalance:0.00,transactions:[],status:2},ZEL:{balance:0.0000,fiatBalance:0.00,transactions:[],status:2},DASH:{balance:0.0000,fiatBalance:0.00,transactions:[],status:2}},
       status: true
     }
   }
