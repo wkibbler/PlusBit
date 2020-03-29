@@ -231,7 +231,7 @@ export default class Settings extends Component {
                   <TouchableOpacity onPress={() => Linking.openURL('https://github.com/PlusBitPos/PrivacyPolicy')}><Text color='#00cbb3' size={12}>Privacy Policy </Text></TouchableOpacity>
                   </View>
                 </Card>
-                <Card bottom={Platform.OS == 'ios' ? 30 : 80} top={30} width={width - 50} height={80}>
+                <Card bottom={Platform.OS == 'ios' ? 30 : 80} top={30} width={width - 50} height={102}>
                   <View style={{flexDirection: 'row', marginTop: 12}}>
                   <Text size={12}>From </Text>
                   <TouchableOpacity onPress={() => Linking.openURL('https://plusbit.tech')}><Text color='#00cbb3' size={12}>PlusBit </Text></TouchableOpacity>
@@ -240,6 +240,10 @@ export default class Settings extends Component {
                   <View style={{flexDirection: 'row', marginTop: 10}}>
                   <Text size={12}>Created by </Text>
                   <TouchableOpacity onPress={() => Linking.openURL('https://libtechnologies.io')}><Text color='#00cbb3' size={12}>L.I.B. Technologies </Text></TouchableOpacity>
+                  </View>
+                  <View style={{flexDirection: 'row', marginTop: 10}}>
+                  <Text size={12}>Powered by </Text>
+                  <TouchableOpacity onPress={() => Linking.openURL('https://zelcore.io')}><Text color='#00cbb3' size={12}>ZelCore </Text></TouchableOpacity>
                   </View>
                 </Card>
           </ScrollView>
