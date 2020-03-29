@@ -44,8 +44,13 @@ export default function(to, amount, fee, from, priv, bls, coin, stageFunction, c
               var targets = [{ address: 'moKyssgHDXPfgW7AmUgQADrhtYnJLWuTGu', satoshis: round }]
               var feeRate = 0;
               let { inputs, outputs, fee } = coinSelect(responseJson, targets, feeRate);
+              try {
               var builder = new lib.TransactionBuilder(coinData.network);
+              } catch (err) {
+                stageFunction('1: ' + err)
+              }
               //zcash sapling support
+              try {
               if (coin == "ZEL"){
                 builder.setVersion(lib.Transaction.ZCASH_SAPLING_VERSION);
                 builder.setVersionGroupId(parseInt('0x892F2085', 16));
@@ -55,24 +60,43 @@ export default function(to, amount, fee, from, priv, bls, coin, stageFunction, c
                   console.log(error);
                 })
               }
+            } catch (err) {
+              stageFunction('2: ' + err)
+            }
               //getting signing key
               var key = lib.ECPair.fromWIF(priv, coinData.network);
               //adding inputs
               let values = new Array
+              try {
               inputs.forEach(input => values.push(input.satoshis));
+              } catch (err) {
+                stageFunction('3: ' + err)
+              }
               const add = (a, b) => a + b;
               const sum = values.reduce(add)
               var changeAm = sum - round;
+              try {
               inputs.forEach(input => builder.addInput(input.txid, input.vout));
+              } catch (err) {
+                stageFunction('4: ' + err)
+              }
               //adding outputs
+              try {
               builder.addOutput(to.replace(/\s+/g, ''), Math.ceil(amount * 100000000));
               builder.addOutput(from, changeAm);
+              } catch (err) {
+                stageFunction('5: ' + err)
+              }
               //Siging transaction
+              try {
               if (coin == "ZEL"){
                 inputs.forEach((v,i) => {builder.sign(i, key, '', lib.Transaction.SIGHASH_SINGLE, sum)})
               } else {
                   inputs.forEach((v, i) => {builder.sign(i, key)})
               }
+            } catch (err) {
+              stageFunction('6: ' + err)
+            }
               var txhex = builder.build().toHex();
               //broadcast transaction
               axios.post(`${coinData.explorer}/api/tx/send`, {rawtx: txhex})

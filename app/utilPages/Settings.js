@@ -201,9 +201,9 @@ export default class Settings extends Component {
                 <Card top={30} width={width - 50} height={320}>
                   <Text top={20} bold>About PlusBit</Text>
                   <View style={{flex: 1, padding: 20, paddingTop: 5, alignItems: 'center'}}>
-                    <Text center>{AboutMessage.trimmed}</Text>
-                    <TouchableOpacity onPress={() => this.setState({aboutModal: true})}>
-                      <Text top={5} color='#00cbb3'>Read More</Text>
+                    <Text center>{AboutMessage.full}</Text>
+                    <TouchableOpacity style={{marginTop: 5}} onPress={() => this.setState({aboutModal: true})}>
+                      <Text color='#00cbb3'>Read More</Text>
                     </TouchableOpacity>
                   </View>
                   <View style={{flexDirection: 'row', height: 80, alignItems: 'center'}}>
@@ -248,8 +248,10 @@ export default class Settings extends Component {
                 </Card>
           </ScrollView>
           <Modal onBackdropPress={() => this.setState({aboutModal: false})} style={styles.modal} isVisible={this.state.aboutModal}>
-            <Card justifyCenter padding={10} width={width / 1.5} height={height / 2}>
-                <Text center size={width / 35}>{AboutMessage.full}</Text>
+            <Card justifyCenter padding={10} width={width / 1.2} height={height / 1.5}>
+              <ScrollView contentContainerStyle={{justifyContent: 'center', height: '100%'}}>
+                <Text center size={width / 30}>{AboutMessage.full}</Text>
+              </ScrollView>
             </Card>
           </Modal>
         </View>
