@@ -7,7 +7,9 @@ import {
   Text,
   Animated,
   Dimensions,
-  Easing
+  Easing,
+  Image,
+  Platform
 } from 'react-native';
 
 import Root from './app/Root'
@@ -18,6 +20,8 @@ import RNSecureKeyStore, {ACCESSIBLE} from "react-native-secure-key-store";
 import Keys from './components/GenerateKeys'
 import Spinner from 'react-native-loading-spinner-overlay'
 import FingerprintScanner from 'react-native-fingerprint-scanner';
+import Modal from 'react-native-modal'
+import Card from './components/Card'
 
 
 const width = Dimensions.get('window').width
@@ -39,20 +43,25 @@ export default class App extends Component {
       keys: {},
       spinner: false,
       balanceData: {totalBalance: 0.0000,BTC:{balance: 0.0000,fiatBalance: 0.00,transactions:[], status:2},ILC:{balance:0.0000,fiatBalance:0.00,transactions:[],status:2},ZEL:{balance:0.0000,fiatBalance:0.00,transactions:[],status:2},DASH:{balance:0.0000,fiatBalance:0.00,transactions:[],status:2}},
-      status: true
+      status: true,
+      modal: false
     }
   }
   componentDidMount(){
     RNSecureKeyStore.get("userData").then((res) => {
       let json = JSON.parse(res)
       if (json.biometrics){
-        // some sort of modal for android
-        FingerprintScanner.authenticate({ description: 'Scan your fingerprint on the device scanner to continue' }).then(() => {
-          this.setState({modal: false})
-          this.dashboard()
-        }).catch((error) => {
-          this.login()
-        });
+        this.setState({modal: true})
+        if (Platform.OS == 'ios'){
+          this.iosBiometricAuthentication()
+        } else {
+          this.setState({modal: true})
+          if (Platform.Version < 23){
+            this.androidLegacyAuthentication()
+          } else {
+            this.androidCurrentAuthentication()
+          }
+        }
       } else {
         setTimeout(() => {
           this.login()
@@ -65,7 +74,34 @@ export default class App extends Component {
     })
   }
 
+  iosBiometricAuthentication = () => {
+    FingerprintScanner.authenticate({ description: 'Scan your fingerprint on the device scanner to continue' }).then(() => {
+      this.setState({modal: false})
+      this.dashboard()
+    }).catch((error) => {
+      this.login()
+    });
+  }
+
+  androidCurrentAuthentication =() => {
+    FingerprintScanner.authenticate({ description: 'Log in with Biometrics' }).then(() => {
+        this.setState({modal: false})
+        this.dashboard()
+     });
+  }
+
+  androidLegacyAuthentication = () => {
+    FingerprintScanner.authenticate({ onAttempt: Alert.alert('Unsccessful') }).then(() => {
+      this.setState({modal: false})
+      this.dashboard()
+    }).catch((error) => {
+      this.setState({modal: false})
+      this.login()
+    });
+  }
+
   login = () => {
+    this.setState({modal: false})
     Animated.timing(this.state.main, {
       toValue: -height,
       duration: 1000,
@@ -232,6 +268,11 @@ export default class App extends Component {
           />
         </Animated.View>
       </Animated.View>
+      <Modal style={styles.modal} isVisible={this.state.modal}>
+        <Card justifyCenter width={width / 3.5} height={width / 3}>
+          <Image style={{width: 70, height: 70}} source={require('./assets/fingerprint.png')}/>
+        </Card>
+      </Modal>
       </View>
     )
   }
@@ -241,6 +282,10 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     backgroundColor: '#222222',
-    height: height
+    height
+  },
+  modal: {
+    flex: 1,
+    alignItems: 'center'
   }
 });

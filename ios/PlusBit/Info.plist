@@ -42,7 +42,7 @@
 	<key>NSFaceIDUsageDescription</key>
 	<string>$(PRODUCT_NAME) requires biometrics for faster logins</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string/>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Poppins-ExtraBold.ttf</string>

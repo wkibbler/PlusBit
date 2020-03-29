@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Dimensions, ScrollView, TouchableOpacity, Alert, Animated, Image, Clipboard, Linking } from 'react-native';
+import { View, StyleSheet, Dimensions, ScrollView, TouchableOpacity, Alert, Animated, Image, Clipboard, Linking, Platform, DeviceEventEmitter } from 'react-native';
 import Card from '../../components/Card'
 import Text from '../../components/Text'
 import RNSecureKeyStore, {ACCESSIBLE} from "react-native-secure-key-store";
@@ -7,6 +7,8 @@ import Picker from '../../components/Picker'
 import ToggleSwitch from 'toggle-switch-react-native'
 import FingerprintScanner from 'react-native-fingerprint-scanner';
 import AboutMessage from './AboutMessage'
+import DeviceInfo from 'react-native-device-info'
+import Modal from 'react-native-modal'
 
 const width = Dimensions.get('window').width
 const height = Dimensions.get('window').height
@@ -18,7 +20,8 @@ export default class Settings extends Component {
         this.state = {
             privKeyHeight: new Animated.Value(90),
             showPrivKeys: false,
-            user: {biometrics: false}
+            user: {biometrics: false},
+            aboutModal: false
         }
     }
 
@@ -104,7 +107,7 @@ export default class Settings extends Component {
     return (
         <View style={styles.background}>
           <ScrollView style={{width: width, height: height - 30}} contentContainerStyle={{alignItems: 'center'}} showsVerticalScrollIndicator={false}>
-            <View style={{width: width - 50, marginTop: 60}}>
+            <View style={{width: width - 50, marginTop: DeviceInfo.hasNotch() == 1 ? 60 : 30}}>
                 <Card justifyCenter height={40}>
                   <TouchableOpacity onPress={() => this.props.props.utilToDashboard()}>
                     <Text bold>{'<  BACK'}</Text>
@@ -195,11 +198,14 @@ export default class Settings extends Component {
                     onToggle={isOn => this.toggleBiometrics(isOn)}
                   />
                 </Card>
-                <Card top={30} width={width - 50} height={300}>
+                <Card top={30} width={width - 50} height={320}>
                   <Text top={20} bold>About PlusBit</Text>
-                  <ScrollView style={{padding: 20, paddingTop: 0, marginTop: 5}}>
-                    <Text center>{AboutMessage}</Text>
-                  </ScrollView>
+                  <View style={{flex: 1, padding: 20, paddingTop: 5, alignItems: 'center'}}>
+                    <Text center>{AboutMessage.trimmed}</Text>
+                    <TouchableOpacity onPress={() => this.setState({aboutModal: true})}>
+                      <Text top={5} color='#00cbb3'>Read More</Text>
+                    </TouchableOpacity>
+                  </View>
                   <View style={{flexDirection: 'row', height: 80, alignItems: 'center'}}>
                   <TouchableOpacity onPress={() => Linking.openURL('https://plusbit.tech')} style={{marginLeft: 10, marginRight: 10}}>
                       <Image style={styles.socialIcon} source={require('../../assets/website.png')}/>
@@ -225,7 +231,7 @@ export default class Settings extends Component {
                   <TouchableOpacity onPress={() => Linking.openURL('https://github.com/PlusBitPos/PrivacyPolicy')}><Text color='#00cbb3' size={12}>Privacy Policy </Text></TouchableOpacity>
                   </View>
                 </Card>
-                <Card bottom={30} top={30} width={width - 50} height={80}>
+                <Card bottom={Platform.OS == 'ios' ? 30 : 80} top={30} width={width - 50} height={80}>
                   <View style={{flexDirection: 'row', marginTop: 12}}>
                   <Text size={12}>From </Text>
                   <TouchableOpacity onPress={() => Linking.openURL('https://plusbit.tech')}><Text color='#00cbb3' size={12}>PlusBit </Text></TouchableOpacity>
@@ -237,6 +243,11 @@ export default class Settings extends Component {
                   </View>
                 </Card>
           </ScrollView>
+          <Modal onBackdropPress={() => this.setState({aboutModal: false})} style={styles.modal} isVisible={this.state.aboutModal}>
+            <Card justifyCenter padding={10} width={width / 1.5} height={height / 2}>
+                <Text center size={width / 35}>{AboutMessage.full}</Text>
+            </Card>
+          </Modal>
         </View>
     )
   }
@@ -267,5 +278,9 @@ const styles = StyleSheet.create({
     socialIcon: {
       width: 30,
       height: 30
+    },
+    modal: {
+      flex: 1,
+      alignItems: 'center'
     }
 });

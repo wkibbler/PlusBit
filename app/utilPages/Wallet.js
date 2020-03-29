@@ -5,7 +5,7 @@ import Text from '../../components/Text'
 import WalletHeader from '../../components/WalletHeader'
 import Row from '../../components/Row'
 import LineGradient from '../../components/LineGradient'
-import QRCode from 'react-native-qr-generator'
+//import QRCode from 'react-native-qr-generator'
 import DeviceInfo from 'react-native-device-info'
 import txs from './exampleTxs'
 import GradientButton from '../../components/GradentButton'
@@ -13,6 +13,9 @@ import transaction from '../../components/Transactions'
 import Spinner from 'react-native-loading-spinner-overlay'
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import Modal from 'react-native-modal'
+//import QRCode from 'react-native-qrcode-svg';
+import QRCode from 'react-qr-code';
+
 
 const width = Dimensions.get('window').width
 const height = Dimensions.get('window').height
@@ -37,7 +40,7 @@ export default class Wallet extends Component {
             qrModal: false,
             errorIndex: '',
             sucessModal: false,
-            heightList: props.props.balanceData
+            heightList: props.props.balanceData,
         }
     }
 
@@ -146,6 +149,7 @@ export default class Wallet extends Component {
     disMount = () => {
         this.setState({address: '', amount: ''})
         this.changeFee('economy')
+        this.SwitchToActivity()
     }
 
     onQrCodeScan = (e) => {
@@ -269,12 +273,13 @@ export default class Wallet extends Component {
                     </Card>
                   </TouchableOpacity>
                   <Card justifyCenter width={width - 50} height={width - 50} top={30}>
-                    <QRCode 
-                      size={width - 80} 
-                      value={this.props.props.keys[`${this.props.props.args.name}address`]}
-                      foregroundColor='black'
-                      backgroundColor='#363636'
-                    />
+                      <View style={{overflow: 'hidden'}}>
+                      <QRCode 
+                        value={this.props.props.keys[`${this.props.props.args.name}address`]}
+                        bgColor='#363636'
+                        size={width - 80}
+                      />
+                    </View>
                   </Card>
                   </View>
                     ) : this.state.isSend ? (
@@ -423,9 +428,9 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
       },
-      successModal: {
-          flex: 1,
-          alignItems: 'center',
-          justifyContent: 'center'
-      }
+    successModal: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center'
+    }
 });

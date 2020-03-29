@@ -230,7 +230,7 @@ const styles = StyleSheet.create({
       width: width,
       height: 100,
       flexDirection: 'row',
-      marginTop: height / 20,
+      marginTop: DeviceInfo.hasNotch() == 1 ? height / 20 : height / 15,
     },
     navIconWrapper: {
       alignItems: 'center'

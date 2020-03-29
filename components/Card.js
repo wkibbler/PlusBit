@@ -5,16 +5,16 @@ export default class Card extends Component {
   render() {
     return (
         <Animated.View style={[Platform.OS == 'ios' ? styles.shadow : null, {
-            width: this.props.width ? this.props.width : 100,
-            height: this.props.height ? this.props.height : 100,
-            borderRadius: this.props.radius ? this.props.radius : 10,
-            backgroundColor: this.props.color ? this.props.color : '#363636',
+            width: this.props.width || 100,
+            height: this.props.height || 100,
+            borderRadius: this.props.radius || 10,
+            backgroundColor: this.props.color || '#363636',
             alignItems: 'center',
-            marginTop: this.props.top ? this.props.top : 0,
-            marginBottom: this.props.bottom ? this.props.bottom : 0,
+            marginTop: this.props.top || 0,
+            marginBottom: this.props.bottom || 0,
             justifyContent: this.props.justifyCenter ? 'center' : 'flex-start',
             flexDirection: this.props.direction,
-            padding: this.props.padding ? this.props.padding : 0,
+            padding: this.props.padding || 0,
             opacity: this.props.disabled ? 0.5 : 1,
             elevation: this.props.disableElevation ? 0 : 20
         }, this.props.style ? this.props.style : null]}
