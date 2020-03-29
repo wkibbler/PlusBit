@@ -186,13 +186,13 @@ PODS:
     - React-cxxreact (= 0.61.5)
     - React-jsi (= 0.61.5)
   - React-jsinspector (0.61.5)
-  - react-native-camera (3.19.1):
+  - react-native-camera (3.21.0):
     - React
-    - react-native-camera/RCT (= 3.19.1)
-    - react-native-camera/RN (= 3.19.1)
-  - react-native-camera/RCT (3.19.1):
+    - react-native-camera/RCT (= 3.21.0)
+    - react-native-camera/RN (= 3.21.0)
+  - react-native-camera/RCT (3.21.0):
     - React
-  - react-native-camera/RN (3.19.1):
+  - react-native-camera/RN (3.21.0):
     - React
   - react-native-fingerprint-scanner (4.0.0):
     - React
@@ -384,7 +384,7 @@ SPEC CHECKSUMS:
   React-jsi: cb2cd74d7ccf4cffb071a46833613edc79cdf8f7
   React-jsiexecutor: d5525f9ed5f782fdbacb64b9b01a43a9323d2386
   React-jsinspector: fa0ecc501688c3c4c34f28834a76302233e29dc0
-  react-native-camera: 2eb144a4572d9342bddc946f4c0c3bc2b50e374e
+  react-native-camera: a9749fa0c1162cdb2f56b93a5d97a72ebd56694f
   react-native-fingerprint-scanner: 4c69cf0f6b54bfec96fab0d263fd77afbd3b261b
   react-native-randombytes: 991545e6eaaf700b4ee384c291ef3d572e0b2ca8
   react-native-slider: b2f361499888302147205f17f6fffa921a7bda70
@@ -405,6 +405,6 @@ SPEC CHECKSUMS:
   RNSha256: 22383f4a1ed2b38da9d642c608892a3ab4cad80a
   Yoga: f2a7cd4280bfe2cca5a7aed98ba0eb3d1310f18b
 
-PODFILE CHECKSUM: 5a268885269841cd1fe0e9f1b883ab32f2fe76c4
+PODFILE CHECKSUM: 25a89ec107ec4fbc60533edb8205bfc08604f6e5
 
 COCOAPODS: 1.8.0

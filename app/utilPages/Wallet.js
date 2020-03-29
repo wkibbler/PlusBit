@@ -5,7 +5,7 @@ import Text from '../../components/Text'
 import WalletHeader from '../../components/WalletHeader'
 import Row from '../../components/Row'
 import LineGradient from '../../components/LineGradient'
-//import QRCode from 'react-native-qr-generator'
+import IOS_QR from 'react-native-qr-generator'
 import DeviceInfo from 'react-native-device-info'
 import txs from './exampleTxs'
 import GradientButton from '../../components/GradentButton'
@@ -13,8 +13,7 @@ import transaction from '../../components/Transactions'
 import Spinner from 'react-native-loading-spinner-overlay'
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import Modal from 'react-native-modal'
-//import QRCode from 'react-native-qrcode-svg';
-import QRCode from 'react-qr-code';
+import Android_QR from 'react-qr-code';
 
 
 const width = Dimensions.get('window').width
@@ -273,13 +272,22 @@ export default class Wallet extends Component {
                     </Card>
                   </TouchableOpacity>
                   <Card justifyCenter width={width - 50} height={width - 50} top={30}>
-                      <View style={{overflow: 'hidden'}}>
-                      <QRCode 
-                        value={this.props.props.keys[`${this.props.props.args.name}address`]}
-                        bgColor='#363636'
-                        size={width - 80}
-                      />
-                    </View>
+                      {
+                          Platform.OS == 'ios' ? (
+                            <IOS_QR 
+                              size={width - 80} 
+                              value={this.props.props.keys[`${this.props.props.args.name}address`]}
+                              foregroundColor='black'
+                              backgroundColor='#363636'
+                          />
+                          ) : (
+                            <Android_QR 
+                              value={this.props.props.keys[`${this.props.props.args.name}address`]}
+                              bgColor='#363636'
+                              size={width - 80}
+                          />
+                          )
+                      }
                   </Card>
                   </View>
                     ) : this.state.isSend ? (

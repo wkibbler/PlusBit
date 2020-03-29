@@ -51,7 +51,6 @@ export default class App extends Component {
     RNSecureKeyStore.get("userData").then((res) => {
       let json = JSON.parse(res)
       if (json.biometrics){
-        this.setState({modal: true})
         if (Platform.OS == 'ios'){
           this.iosBiometricAuthentication()
         } else {
