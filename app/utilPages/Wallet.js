@@ -242,7 +242,8 @@ export default class Wallet extends Component {
                                         </View>
                                         {
                                             this.state.heightList[this.props.props.args.name].heightList[index] == 65 ? null : (
-                                                <View style={{marginTop: 20, width, alignItems: 'center'}}>
+                                              <View style={{width, alignItems: 'center'}}>
+                                                <View style={{marginTop: 20, alignItems: 'flex-start'}}>
                                                   <TouchableOpacity onPress={() => {
                                                       Clipboard.setString(item.txid)
                                                       Alert.alert('Copied to clipboard')
@@ -262,6 +263,7 @@ export default class Wallet extends Component {
                                                     <Text size={width / 27}>{item.confirmations} {'  '.repeat(item.to_from.length - 8)}</Text>
                                                   </View>
                                                 </View>
+                                              </View>
                                             )
                                         }
                                       </TouchableOpacity>
@@ -288,7 +290,7 @@ export default class Wallet extends Component {
                               size={width - 80} 
                               value={this.props.props.keys[`${this.props.props.args.name}address`]}
                               foregroundColor='black'
-                              backgroundColor='#363636'
+                              backgroundColor='#4d4c4c'
                           />
                           ) : (
                             <Android_QR 
