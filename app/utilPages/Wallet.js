@@ -314,7 +314,7 @@ export default class Wallet extends Component {
                               </TouchableOpacity>
                             </Card>
                             <Card style={{flexDirection: 'row'}} justifyCenter top={30} width={300} height={50}>
-                              <TextInput keyboardType='numeric' placeholder='Amount' placeholderTextColor="grey" style={styles.input} onChangeText={(amount) => this.setState({amount: amount.replace(/,/, '.')})} value={this.state.amount}/>
+                              <TextInput keyboardType='numeric' placeholder='Amount' placeholderTextColor="grey" style={styles.input} onChangeText={(amount) => this.setState({amount: amount.replace(/,/, '.'), isMax: false})} value={this.state.amount}/>
                               <TouchableOpacity onPress={this.max} style={[{borderColor: this.getCoinInfo().color}, styles.sendAll]}>
                                   <Text bold size={10}>MAX</Text>
                               </TouchableOpacity>
