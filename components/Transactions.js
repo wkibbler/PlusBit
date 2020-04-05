@@ -31,92 +31,105 @@ function getCoinData(sym, bls){
   }
 }
 
-export default function(to, amount, fee, from, priv, bls, coin, stageFunction, cb){
-  console.log(`amount: ${amount + fee} fee: ${fee}`)
-    if (to == '' || amount <= fee) { setTimeout(function(){ Alert.alert('Error', 'Enter an address and amount greater than transaction fee'); }, 200); cb() } else {
-      var coinData = getCoinData(coin, bls)
-        if (coinData.balance <= (amount + fee)) { setTimeout(function(){ Alert.alert('Not enough funds'); }, 200); cb() } else {
-            let totalSats = (amount * 100000000) + (fee * 100000000)
-            let round = Math.ceil(totalSats)
-
-            return fetch(`${coinData.explorer}/api/addr/${from}/utxo`).then((response) => response.json()).then((responseJson) => {
-              //creating trasaction after receiving utxo data
-              var targets = [{ address: 'moKyssgHDXPfgW7AmUgQADrhtYnJLWuTGu', satoshis: round }]
-              var feeRate = 0;
-              let { inputs, outputs, fee } = coinSelect(responseJson, targets, feeRate);
-              try {
-              var builder = new lib.TransactionBuilder(coinData.network);
-              } catch (err) {
-                stageFunction('1: ' + err)
-              }
-              //zcash sapling support
-              try {
-              if (coin == "ZEL"){
-                builder.setVersion(lib.Transaction.ZCASH_SAPLING_VERSION);
-                builder.setVersionGroupId(parseInt('0x892F2085', 16));
-                axios.get(`${coinData.explorer}/api/status`).then(function (status) {
-                  builder.setExpiryHeight(status.data.info.blocks + 100);
-                }).catch(function (error) {
-                  console.log(error);
-                })
-              }
-            } catch (err) {
-              stageFunction('2: ' + err)
-            }
-              //getting signing key
-              var key = lib.ECPair.fromWIF(priv, coinData.network);
-              //adding inputs
-              let values = new Array
-              try {
-              inputs.forEach(input => values.push(input.satoshis));
-              } catch (err) {
-                stageFunction('3: ' + err)
-              }
-              const add = (a, b) => a + b;
-              const sum = values.reduce(add)
-              var changeAm = sum - round;
-              try {
-              inputs.forEach(input => builder.addInput(input.txid, input.vout));
-              } catch (err) {
-                stageFunction('4: ' + err)
-              }
-              //adding outputs
-              try {
-              builder.addOutput(to.replace(/\s+/g, ''), Math.ceil(amount * 100000000));
-              builder.addOutput(from, changeAm);
-              } catch (err) {
-                stageFunction('5: ' + err)
-              }
-              //Siging transaction
-              try {
-              if (coin == "ZEL"){
-                inputs.forEach((v,i) => {builder.sign(i, key, '', lib.Transaction.SIGHASH_SINGLE, sum)})
-              } else {
-                  inputs.forEach((v, i) => {builder.sign(i, key)})
-              }
-            } catch (err) {
-              stageFunction('6: ' + err)
-            }
-              var txhex = builder.build().toHex();
-              //broadcast transaction
-              axios.post(`${coinData.explorer}/api/tx/send`, {rawtx: txhex})
-              .then(function (response) {
-                cb('sent')
-              })
-              .catch(function (error) {
-                console.log(error)
-                cb()
-                //Could be utxo issue
-                setTimeout(function(){ Alert.alert('Error sending transaction', 'If you have just made a transaction that is currently unconfirmed please try again in a few minutes') }, 200)
-              });
-
-            }).catch((error) => {
-              //this.setState({spinner: false, status: false})
-              cb()
-              setTimeout(() => {
-               Alert.alert('Error', 'Error building and broadcasting transaction')
-             }, 200);
-            })
-        }
+export default function(params, cb){
+  if (params.to == '' || params.amount <= params.fee) { cb({status: 2, message: 'Enter an address and amount greater than transaction fee'}) } else {}
+    var coinData = getCoinData(params.coin, params.bls)
+    if (coinData.balance < Number((params.amount + params.fee).toFixed(8))) { (cb({status: 2, message: 'Not enough funds'})) } else {
+      checkAddress(params, coinData, cb)
     }
+}
+
+function checkAddress(params, coinData, cb){
+  try {
+    lib.address.toOutputScript(params.to, coinData.network)
+    getUtxos(params, coinData, cb)
+  } catch {
+    cb({status: 2, message: 'Invalid address'})
+  }
+}
+
+function getUtxos(params, coinData, cb){
+  axios.get(`${coinData.explorer}/api/addr/${params.from}/utxo`).then(function(result){
+    processUtxos(params, coinData, result.data, cb)
+  }).catch(function() {
+    cb({status: 2, message: 'Connection error. Check your internet connectivity and try again'})
+  })
+}
+
+function processUtxos(params, coinData, utxos, cb){
+  params.totalSats = (params.amount * 100000000) + (params.fee * 100000000)
+  params.round = Number(params.totalSats.toFixed(0))
+  var targets = [{ address: 'moKyssgHDXPfgW7AmUgQADrhtYnJLWuTGu', satoshis: params.round }]
+  var feeRate = 0;
+  var { inputs, outputs, fee } = coinSelect(utxos, targets, feeRate);
+  if (inputs == undefined){
+    let available = 0
+    for (var i = 0; i < utxos.length; i++){
+      available = available + utxos[i].amount
+    }
+    cb({status: 2, message: `Insufficient available funds. You have ${available.toFixed(8)} ${params.coin} available. This may be caused my unconfirmed transactions.` +
+   ' If you have any unconfirmed transactions wait until they have at least 1 confirmation and try again'})
+  } else {
+    buildTransaction(params, coinData, inputs, cb)
+  }
+}
+
+function buildTransaction(params, coinData, inputs, cb){
+  try {
+    // init build process
+    var builder = new lib.TransactionBuilder(coinData.network);
+    // add coin specific paramiters
+    if (params.coin == "ZEL"){
+      builder.setVersion(lib.Transaction.ZCASH_SAPLING_VERSION);
+      builder.setVersionGroupId(parseInt('0x892F2085', 16));
+      axios.get(`${coinData.explorer}/api/status`).then(function (status) {
+        builder.setExpiryHeight(status.data.info.blocks + 100);
+      })
+    }
+    // calculate change
+    let values = new Array
+    for (var i = 0; i < inputs.length; i++){
+      values.push(inputs[i].satoshis)
+    }
+    params.sum = values.reduce((a, b) => a + b)
+    var changeAm = params.sum - params.round;
+    console.log(`sent: ${Number((params.amount * 100000000).toFixed(0))} change: ${changeAm} fee: ${params.sum - (Number((params.amount * 100000000).toFixed(0)) + changeAm)}`)
+    // add tx inputs
+    inputs.forEach(input => builder.addInput(input.txid, input.vout))
+    // add outputs
+    builder.addOutput(params.to.replace(/\s+/g, ''), Number(((params.amount * 100000000)).toFixed(0)))
+    if (!(params.round == coinData.balance * 100000000)){
+      builder.addOutput(params.from, changeAm)
+    }
+    signTransaction(params, coinData, inputs, builder, cb)
+  } catch {
+    cb({status: 2, message: 'Problem building transaction. Please try again'})
+  }
+}
+
+function signTransaction(params, coinData, inputs, builder, cb){
+  try {
+    var key = lib.ECPair.fromWIF(params.priv, coinData.network);
+    // applying signature
+    if (params.coin == "ZEL"){
+      inputs.forEach((v, i) => {builder.sign(i, key, '', lib.Transaction.SIGHASH_SINGLE, inputs[i].satoshis)})
+    } else {
+      inputs.forEach((v, i) => {builder.sign(i, key)})
+    }
+    broadcastTransaction(coinData, builder.build().toHex(), cb)
+  } catch (err) {
+    console.log(err)
+    cb({status: 2, message: 'Problem signing transaction. Please try again'})
+  }
+}
+
+function broadcastTransaction(coinData, txhex, cb){
+ axios.post(`${coinData.explorer}/api/tx/send`, {rawtx: txhex})
+  .then(function (response) {
+    cb({status: 1})
+  })
+  .catch(function (error) {
+    console.log(error)
+    cb({status: 2, message: 'problem broadcasting transaction, if you have just made a transaction that is currently unconfirmed please try again in a few minutes'})
+  });
 }

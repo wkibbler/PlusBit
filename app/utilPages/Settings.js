@@ -201,12 +201,14 @@ export default class Settings extends Component {
                 <Card top={30} width={width - 50} height={320}>
                   <Text top={20} bold>About PlusBit</Text>
                   <View style={{flex: 1, padding: 20, paddingTop: 5, alignItems: 'center'}}>
-                    <Text center>{AboutMessage.full}</Text>
-                    <TouchableOpacity style={{marginTop: 5}} onPress={() => this.setState({aboutModal: true})}>
+                    <View style={{height: 180}}>
+                       <Text style={{flex: 1}} center>{AboutMessage.full}</Text>
+                    </View>
+                    <TouchableOpacity style={{position: 'absolute', top: 185}} onPress={() => this.setState({aboutModal: true})}>
                       <Text color='#00cbb3'>Read More</Text>
                     </TouchableOpacity>
                   </View>
-                  <View style={{flexDirection: 'row', height: 80, alignItems: 'center'}}>
+                  <View style={{flexDirection: 'row', alignItems: 'center', position: 'absolute', top: 270}}>
                   <TouchableOpacity onPress={() => Linking.openURL('https://plusbit.tech')} style={{marginLeft: 10, marginRight: 10}}>
                       <Image style={styles.socialIcon} source={require('../../assets/website.png')}/>
                     </TouchableOpacity>
@@ -223,7 +225,7 @@ export default class Settings extends Component {
                       <Image style={styles.socialIcon} source={require('../../assets/instagram.png')}/>
                     </TouchableOpacity>
                   </View>
-                  <Text style={{position: 'absolute', bottom: 5}} size={10} color="grey">v0.0.1</Text>
+                  {/*<Text style={{position: 'absolute', bottom: 5}} size={10} color="grey">v0.0.1</Text>*/}
                 </Card>
                 <Card justifyCenter top={30} width={width - 50} height={60}>
                   <View style={{alignItems: 'center'}}>

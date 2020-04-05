@@ -56,9 +56,9 @@ export default class App extends Component {
         } else {
           this.setState({modal: true})
           if (Platform.Version < 23){
-            this.androidLegacyAuthentication()
+            this.iosBiometricAuthentication()
           } else {
-            this.androidCurrentAuthentication()
+            this.iosBiometricAuthentication()
           }
         }
       } else {
@@ -78,6 +78,7 @@ export default class App extends Component {
       this.setState({modal: false})
       this.dashboard()
     }).catch((error) => {
+      this.setState({modal: false})
       this.login()
     });
   }

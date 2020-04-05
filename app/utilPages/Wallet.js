@@ -14,6 +14,7 @@ import Spinner from 'react-native-loading-spinner-overlay'
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import Modal from 'react-native-modal'
 import Android_QR from 'react-qr-code';
+import { RESULTS } from 'react-native-permissions';
 
 
 const width = Dimensions.get('window').width
@@ -40,25 +41,20 @@ export default class Wallet extends Component {
             errorIndex: '',
             sucessModal: false,
             heightList: props.props.balanceData,
+            isMax: false
         }
     }
 
     changeFee = (type) => {
-        if (type == 'economy'){
+        if (type == 'economy') {
             this.setState({feeButtons: {left: 'white', middle: 'grey', right: 'grey'}, fee: 0.0000452})
-            if ((Number(this.state.amount) + Number(this.state.fee)).toFixed(4) == this.getCoinInfo().balance){
-                this.setState({amount: String(Number(this.getCoinInfo().balance - 0.0000452).toFixed(8))})
-            }
-        } else if (type == 'standard'){
+            if (this.state.isMax) this.setState({amount: String((Number(this.getCoinInfo().balance) - 0.0000452).toFixed(8))})
+        } else if (type == 'standard') {
             this.setState({feeButtons: {left: 'grey', middle: 'white', right: 'grey'}, fee: 0.0002265})
-            if ((Number(this.state.amount) + Number(this.state.fee)).toFixed(4) == this.getCoinInfo().balance){
-                this.setState({amount: String(Number(this.getCoinInfo().balance - 0.0002265).toFixed(8))})
-            }
-        } else if (type == 'fast'){
+            if (this.state.isMax) this.setState({amount: String((Number(this.getCoinInfo().balance) - 0.0002265).toFixed(8))})
+        } else if (type == 'fast') {
             this.setState({feeButtons: {left: 'grey', middle: 'grey', right: 'white'}, fee: 0.0004068})
-            if ((Number(this.state.amount) + Number(this.state.fee)).toFixed(4) == this.getCoinInfo().balance){
-                this.setState({amount: String(Number(this.getCoinInfo().balance - 0.0004068).toFixed(8))})
-            }
+            if (this.state.isMax) this.setState({amount: String((Number(this.getCoinInfo().balance) - 0.0004068).toFixed(8))})
         }
     }
 
@@ -111,6 +107,7 @@ export default class Wallet extends Component {
     }
 
     copyAddress = () => {
+        console.log(this.props.props.keys[`${this.props.props.args.name}address`])
         Clipboard.setString(this.props.props.keys[`${this.props.props.args.name}address`])
         Alert.alert('Copied to clipboard')
     }
@@ -118,31 +115,32 @@ export default class Wallet extends Component {
     sendTx = async () => {
         let self = this
         this.setState({spinner: true})
-        transaction(
-            this.state.address, 
-            Number(this.state.amount), 
-            Number(this.state.fee), 
-            this.props.props.keys[`${this.props.props.args.name}address`], 
-            this.props.props.keys[`${this.props.props.args.name}privatekey`],
-            this.props.props.balanceData,
-            this.props.props.args.name,
-            function(error){
-                self.setState({errorIndex: error})
-            },
-            function(result){
+        transaction({
+            to: this.state.address,
+            amount: Number(this.state.amount),
+            fee: Number(this.state.fee),
+            from: this.props.props.keys[`${this.props.props.args.name}address`],
+            priv: this.props.props.keys[`${this.props.props.args.name}privatekey`],
+            bls: this.props.props.balanceData,
+            coin: this.props.props.args.name,
+            stageFunction: (error) => {
+                this.setState({errorIndex: error})
+            }
+        },
+        function(result){
             self.setState({spinner: false})
-            if (result == 'sent'){
+            if (result.status == 2){
+                Alert.alert('Error', result.message)
+            } else if (result.status == 1){
                 self.SwitchToActivity()
                 self.setState({sucessModal: true, address: '', amount: 0})
                 self.changeFee('economy')
             }
-        }).catch(function (error) {
-            self.setState({spinner: false})
         })
     }
 
     max = () => {
-        this.setState({amount: String((Number(this.getCoinInfo().balance) - Number(this.state.fee)).toFixed(8))})
+        this.setState({amount: String((Number(this.getCoinInfo().balance) - Number(this.state.fee)).toFixed(8)), isMax: true})
     }
 
     disMount = () => {
@@ -158,7 +156,7 @@ export default class Wallet extends Component {
     expand(i){
         let hl = this.state.heightList
         if (hl[this.props.props.args.name].heightList[i] == 65) {
-           hl[this.props.props.args.name].heightList[i] = 150
+           hl[this.props.props.args.name].heightList[i] = 200
            this.setState({heightList: hl})
         } else {
             hl[this.props.props.args.name].heightList[i] = 65
@@ -226,10 +224,18 @@ export default class Wallet extends Component {
                                         <View style={styles.txIconCard}>
                                           <Image style={styles.txIcon} source={item.direction == 'SENT' ? require('../../assets/sent.png') : require('../../assets/receive.png')}/>
                                         </View>
-                                        <View style={styles.time}>
-                                          <Text bold>{item.date}</Text>
-                                          <Text>{item.time}</Text>
-                                        </View>
+                                        {
+                                            item.confirmations == 0 ? (
+                                                <View style={styles.pending}>
+                                                  <Text color="#e44c3c" bold>Pending ...</Text>
+                                                </View>
+                                            ) : (
+                                                <View style={styles.time}>
+                                                  <Text bold>{item.date}</Text>
+                                                  <Text>{item.time}</Text>
+                                                </View>
+                                            )
+                                        }
                                         <View style={styles.txAmountWrapper}>
                                           <Text size={20}>{item.value.toFixed(4)}</Text>
                                           <Text size={10}>{this.props.props.args.name}</Text>
@@ -251,6 +257,10 @@ export default class Wallet extends Component {
                                                     <Text size={width / 27} bold>{item.direction == 'SENT' ? 'To' : 'From'}: </Text>
                                                     <Text size={width / 27}>{item.to_from}</Text>
                                                   </TouchableOpacity>
+                                                  <View style={{flexDirection: 'row', marginTop: 7}}>
+                                                    <Text size={width / 27} bold>Confirmations: </Text>
+                                                    <Text size={width / 27}>{item.confirmations} {'  '.repeat(item.to_from.length - 8)}</Text>
+                                                  </View>
                                                 </View>
                                             )
                                         }
@@ -283,7 +293,7 @@ export default class Wallet extends Component {
                           ) : (
                             <Android_QR 
                               value={this.props.props.keys[`${this.props.props.args.name}address`]}
-                              bgColor='#363636'
+                              bgColor='#4d4c4c'
                               size={width - 80}
                           />
                           )
@@ -386,6 +396,11 @@ const styles = StyleSheet.create({
     time: {
         marginLeft: 100,
         marginTop: 10
+      },
+      pending: {
+          marginLeft: 100,
+          height: 65,
+          justifyContent: 'center'
       },
       txAmountWrapper: {
         position: 'absolute',
