@@ -5,7 +5,6 @@ import Text from '../../components/Text'
 import WalletHeader from '../../components/WalletHeader'
 import Row from '../../components/Row'
 import LineGradient from '../../components/LineGradient'
-import IOS_QR from 'react-native-qr-generator'
 import DeviceInfo from 'react-native-device-info'
 import txs from './exampleTxs'
 import GradientButton from '../../components/GradentButton'
@@ -14,7 +13,7 @@ import Spinner from 'react-native-loading-spinner-overlay'
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import Modal from 'react-native-modal'
 import Android_QR from 'react-qr-code';
-import { RESULTS } from 'react-native-permissions';
+import IOS_QR from 'react-native-qr-generator'
 
 
 const width = Dimensions.get('window').width
